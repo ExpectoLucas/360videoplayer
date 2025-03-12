@@ -1,0 +1,203 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_intro.unity
+    guid: e0f8a42b4d7d7db4586cd54aba875442
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_Tpos_info.unity
+    guid: 8f7f43db9c16c7441b8701450b6e89b8
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_Tpos1.unity
+    guid: d018f13b68107e64eb94b7eeea3ddf20
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial.unity
+    guid: 95d0aa7b1afc780449980ca016930f23
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_Tpos2.unity
+    guid: 4a80d64945ba55f49a00c361958b5f9a
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_copy.unity
+    guid: ba351d4a017e0ba46bfa128b1b087e01
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_Tsr_info.unity
+    guid: 3c64d806feff5264d874f3811315d819
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_Tsr.unity
+    guid: 3c2614b5411246145b13f8dd43861fe0
+  - enabled: 1
+    path: Assets/Scenes/Experiment/tutorial/tutorial_copy2.unity
+    guid: 502db0acf348e6a48ade6b66f32f01b5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Costa_Rica_Tpos1.unity
+    guid: cc2759d5ffb800144b2e70fa64d2b2c5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-L.unity
+    guid: 52798dafa0de6e147bc3058941d251e8
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Costa_Rica_Tpos2.unity
+    guid: 7bb3cff9a3f45f14fb72f687d7b9a8da
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-L_copy.unity
+    guid: 70af3c4277eabde46bf5c52fe8b78f21
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Costa_Rica_Tsr.unity
+    guid: 16d0542f39a297b4c9d22fa99c7dcbf0
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-L_copy2.unity
+    guid: 97b4f44c53c7de04896d22fe5785c72f
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Farm_Tpos1.unity
+    guid: bd2d38523972af54a9a8b0198d7540fd
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-M.unity
+    guid: 4d56218fd195a5e40afb5398a5798844
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Farm_Tpos2.unity
+    guid: 733a5f03345065e46949446640f404b0
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-M_copy.unity
+    guid: bf737f88d452b2948a7617b9aa8ede8f
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Farm_Tsr.unity
+    guid: 6237b10af12cb984aa2098a911bc165e
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-M_copy2.unity
+    guid: 1e03c96500be09b4a9029aaf940fac56
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Mexico_Tpos1.unity
+    guid: eb7ad5f1b91fe4e4195dd64201f1d5c1
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-S.unity
+    guid: 1dc7f172370cee343869068b8798ba54
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Mexico_Tpos2.unity
+    guid: b4e3276431742244d97734c4776954b8
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-S_copy.unity
+    guid: dbcda1de25aea024988e13d43fb0e156
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Mexico_Tsr.unity
+    guid: fe49275c93284df45ac54b3d63969f21
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-S_copy2.unity
+    guid: b3d0e4ad68d1cd84989e5432a805a474
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu2_Tpos1.unity
+    guid: fa55d2807d0962e49bc1aa2a61c48b38
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-S.unity
+    guid: 735a5b8e9019e454db9e46f9a71856b9
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu2_Tpos2.unity
+    guid: fd7a060e0029c48438f87ee353e2c6f5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-S_copy.unity
+    guid: 17ad412dac308e848823a848419d1d0d
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu2_Tsr.unity
+    guid: 913de41a1493f9847adc6718d02a379e
+  - enabled: 1
+    path: Assets/Scenes/Experiment/S-S_copy2.unity
+    guid: 12867e8a41f978a4d92aca7ff29f00c2
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Campus_Tpos1.unity
+    guid: 4367ca4921f76cf4eb5503cb253715bd
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-M.unity
+    guid: 0b59ad6d09769d44e8b80eb27c4e51a5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Campus_Tpos2.unity
+    guid: 9740bcf4eae021542be04d656618d524
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-M_copy.unity
+    guid: 5d17f39ce211ae14f945ec1222c8bda7
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Campus_Tsr.unity
+    guid: 2bcd40a48c10fdd41832bccd874b50c1
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-M_copy2.unity
+    guid: 0016360f6e6835a47b70b177ef00a61b
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Spain_Tpos1.unity
+    guid: af21963c038daa84ca85bee5ce1a8c5e
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-L.unity
+    guid: 0b355ab2e303a7a49acc379783badffe
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Spain_Tpos2.unity
+    guid: 91b55b6ccad63424ab1cb09a0d865ea1
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-L_copy.unity
+    guid: fd26d43946ec4224bada83428bb192c4
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Spain_Tsr.unity
+    guid: b1fc80defa6ff56439874d0ba04d2427
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-L_copy2.unity
+    guid: 6fc4e28bb1f59474aab77587aed6cda5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/UAE_Tpos1.unity
+    guid: 7ffd3cae1bc39d84e91594c698860107
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-L.unity
+    guid: 724abc3b3b9ae1c4cbd774424013de34
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/UAE_Tpos2.unity
+    guid: 0b8cb3e9a0e0edd4283d18f4e615c88e
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-L_copy.unity
+    guid: a3905bc8ff7c5ad49a3e08f91ab3f1b8
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/UAE_Tsr.unity
+    guid: 706fcabef54bf7a47a9baf753fbe7932
+  - enabled: 1
+    path: Assets/Scenes/Experiment/H-L_copy2.unity
+    guid: 5ac43ba8c190f2a4c83576eaaa0ead09
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Oman_Tpos1.unity
+    guid: 6e23953effac3564888e40ee21caf40d
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-M.unity
+    guid: 34e1c81421da5184dac167bfe44b0c8e
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Oman_Tpos2.unity
+    guid: 5bc2e8f7faa6dfd4dbb752002d2787e5
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-M_copy.unity
+    guid: 786edef500285904ebcebbbc106ca2fb
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Oman_Tsr.unity
+    guid: 6658753f76f700d4582e8f085433ce5d
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-M_copy2.unity
+    guid: 1c16dceea38d7eb45b64987f9b56e3be
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu1_Tpos1.unity
+    guid: 64b80f5bdb7919a4e849a54e50256d45
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-S.unity
+    guid: 33c610c6ca8c563498091b47d46ab5f0
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu1_Tpos2.unity
+    guid: 54db2fb784d31974ea884ae8e0c85d21
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-S_copy.unity
+    guid: 9e16ba71507be34499a807772184dd68
+  - enabled: 1
+    path: Assets/Scenes/Experiment/Task text/Manpu1_Tsr.unity
+    guid: 6a00825a227af0a4a9645b46c3591969
+  - enabled: 1
+    path: Assets/Scenes/Experiment/L-S_copy2.unity
+    guid: b6930ac450a1f3241b86b217950615f6
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: e1fa6dcdcfd6f6d4e8182d924921dc13,
+      type: 2}
+    Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: fa674f5d64234ab4fb529a3b299a7e86,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f4b9bf8d36be47347ae72f87dc90f14f,
+      type: 2}

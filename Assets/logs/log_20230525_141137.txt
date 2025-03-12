@@ -1,0 +1,237 @@
+[2023-05-25 14:12:18] [Timer] Timer start！
+[2023-05-25 14:12:19] [Timeline] press: 0:01
+[2023-05-25 14:12:22] [Timeline]slider grabbed.
+[2023-05-25 14:12:22] [Timeline] release: 1:46
+[2023-05-25 14:12:24] [Control panel] pasued
+[2023-05-25 14:12:27] [Timer] Time spent in this task: 00:09
+[2023-05-25 14:12:27] [Timeline] Ending Time = 1:47
+[2023-05-25 14:12:34] [Timer] Timer start！
+[2023-05-25 14:12:36] [Timeline] press: 1:46
+[2023-05-25 14:12:37] [Timeline]slider grabbed.
+[2023-05-25 14:12:37] [Timeline] release: 1:20
+[2023-05-25 14:12:40] [Control panel] pasued
+[2023-05-25 14:12:40] [Timer] Time spent in this task: 00:06
+[2023-05-25 14:12:40] [Timeline] Ending Time = 1:21
+[2023-05-25 14:13:15] [Timeline] press: 0:00
+[2023-05-25 14:13:16] [Timeline]slider grabbed.
+[2023-05-25 14:13:16] [Timeline] release: 0:00
+[2023-05-25 14:13:16] [Timeline] press: 0:00
+[2023-05-25 14:13:17] [Timeline]slider grabbed.
+[2023-05-25 14:13:17] [Timeline] release: 0:00
+[2023-05-25 14:13:20] [Timer] Timer start！
+[2023-05-25 14:13:22] [Timeline] press: 0:01
+[2023-05-25 14:13:36] [Timeline]slider grabbed.
+[2023-05-25 14:13:36] [Timeline] release: 0:27
+[2023-05-25 14:13:44] [Control panel] pasued
+[2023-05-25 14:13:45] [Timer] Time spent in this task: 00:25
+[2023-05-25 14:13:45] [Timeline] Ending Time = 0:35
+[2023-05-25 14:14:29] [Timer] Timer start！
+[2023-05-25 14:14:30] [Timeline] press: 0:00
+[2023-05-25 14:14:33] [Timeline]slider grabbed.
+[2023-05-25 14:14:33] [Timeline] release: 0:43
+[2023-05-25 14:14:34] [Control panel] pasued
+[2023-05-25 14:14:35] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:14:35] [Timeline] Ending Time = 0:44
+[2023-05-25 14:14:38] [Timer] Timer start！
+[2023-05-25 14:14:40] [Timeline] press: 0:45
+[2023-05-25 14:14:42] [Timeline]slider grabbed.
+[2023-05-25 14:14:42] [Timeline] release: 0:33
+[2023-05-25 14:14:43] [Timer] Time spent in this task: 00:04
+[2023-05-25 14:14:43] [Timeline] Ending Time = 0:34
+[2023-05-25 14:14:54] [Timer] Timer start！
+[2023-05-25 14:14:56] [Timeline] press: 0:01
+[2023-05-25 14:14:59] [Timeline]slider grabbed.
+[2023-05-25 14:14:59] [Timeline] release: 1:19
+[2023-05-25 14:15:00] [Control panel] pasued
+[2023-05-25 14:15:02] [Timer] Time spent in this task: 00:07
+[2023-05-25 14:15:02] [Timeline] Ending Time = 1:20
+[2023-05-25 14:15:57] [Timer] Timer start！
+[2023-05-25 14:15:59] [Timeline] press: 0:01
+[2023-05-25 14:16:01] [Timeline]slider grabbed.
+[2023-05-25 14:16:01] [Timeline] release: 0:50
+[2023-05-25 14:16:02] [Control panel] pasued
+[2023-05-25 14:16:02] [Timer] Time spent in this task: 00:04
+[2023-05-25 14:16:02] [Timeline] Ending Time = 0:51
+[2023-05-25 14:16:06] [Timer] Timer start！
+[2023-05-25 14:16:07] [Timeline] press: 0:50
+[2023-05-25 14:16:10] [Timeline]slider grabbed.
+[2023-05-25 14:16:10] [Timeline] release: 0:16
+[2023-05-25 14:16:11] [Control panel] pasued
+[2023-05-25 14:16:12] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:16:12] [Timeline] Ending Time = 0:17
+[2023-05-25 14:16:23] [Timer] Timer start！
+[2023-05-25 14:16:24] [Timeline] press: 0:00
+[2023-05-25 14:16:28] [Timeline]slider grabbed.
+[2023-05-25 14:16:28] [Timeline] release: 1:06
+[2023-05-25 14:16:28] [Control panel] pasued
+[2023-05-25 14:16:29] [Timer] Time spent in this task: 00:06
+[2023-05-25 14:16:29] [Timeline] Ending Time = 1:06
+[2023-05-25 14:16:50] [Timer] Timer start！
+[2023-05-25 14:16:52] [Timeline] press: 0:01
+[2023-05-25 14:16:55] [Timeline]slider grabbed.
+[2023-05-25 14:16:55] [Timeline] release: 1:25
+[2023-05-25 14:16:56] [Control panel] pasued
+[2023-05-25 14:16:58] [Timer] Time spent in this task: 00:07
+[2023-05-25 14:16:58] [Timeline] Ending Time = 1:26
+[2023-05-25 14:17:02] [Timer] Timer start！
+[2023-05-25 14:17:03] [Timeline] press: 1:24
+[2023-05-25 14:17:08] [Timeline]slider grabbed.
+[2023-05-25 14:17:08] [Timeline] release: 1:07
+[2023-05-25 14:17:09] [Control panel] pasued
+[2023-05-25 14:17:11] [Timeline] press: 1:08
+[2023-05-25 14:17:12] [Timeline]slider grabbed.
+[2023-05-25 14:17:12] [Timeline] release: 0:57
+[2023-05-25 14:17:13] [Control panel] played
+[2023-05-25 14:17:15] [Control panel] pasued
+[2023-05-25 14:17:15] [Timer] Time spent in this task: 00:13
+[2023-05-25 14:17:15] [Timeline] Ending Time = 0:59
+[2023-05-25 14:17:24] [Timer] Timer start！
+[2023-05-25 14:17:25] [Timeline] press: 0:00
+[2023-05-25 14:17:33] [Timeline]slider grabbed.
+[2023-05-25 14:17:33] [Timeline] release: 0:31
+[2023-05-25 14:17:34] [Control panel] pasued
+[2023-05-25 14:17:36] [Timer] Time spent in this task: 00:11
+[2023-05-25 14:17:36] [Timeline] Ending Time = 0:32
+[2023-05-25 14:17:48] [Timer] Timer start！
+[2023-05-25 14:17:49] [Timeline] press: 0:00
+[2023-05-25 14:17:51] [Timeline]slider grabbed.
+[2023-05-25 14:17:51] [Timeline] release: 2:10
+[2023-05-25 14:17:52] [Control panel] pasued
+[2023-05-25 14:17:53] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:17:53] [Timeline] Ending Time = 2:11
+[2023-05-25 14:17:57] [Timer] Timer start！
+[2023-05-25 14:17:59] [Timeline] press: 2:11
+[2023-05-25 14:18:00] [Timeline]slider grabbed.
+[2023-05-25 14:18:00] [Timeline] release: 2:01
+[2023-05-25 14:18:01] [Control panel] pasued
+[2023-05-25 14:18:02] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:18:02] [Timeline] Ending Time = 2:02
+[2023-05-25 14:18:17] [Timer] Timer start！
+[2023-05-25 14:18:18] [Timeline] press: 0:00
+[2023-05-25 14:18:21] [Timeline]slider grabbed.
+[2023-05-25 14:18:21] [Timeline] release: 0:31
+[2023-05-25 14:18:27] [Timeline] press: 0:37
+[2023-05-25 14:18:29] [Timeline]slider grabbed.
+[2023-05-25 14:18:29] [Timeline] release: 0:24
+[2023-05-25 14:18:32] [Control panel] pasued
+[2023-05-25 14:18:33] [Timer] Time spent in this task: 00:16
+[2023-05-25 14:18:33] [Timeline] Ending Time = 0:26
+[2023-05-25 14:18:45] [Timer] Timer start！
+[2023-05-25 14:18:46] [Timeline] press: 0:01
+[2023-05-25 14:18:50] [Timeline]slider grabbed.
+[2023-05-25 14:18:50] [Timeline] release: 0:31
+[2023-05-25 14:18:50] [Control panel] pasued
+[2023-05-25 14:18:52] [Timer] Time spent in this task: 00:06
+[2023-05-25 14:18:52] [Timeline] Ending Time = 0:31
+[2023-05-25 14:18:56] [Timer] Timer start！
+[2023-05-25 14:18:57] [Timeline] press: 0:30
+[2023-05-25 14:18:59] [Timeline]slider grabbed.
+[2023-05-25 14:18:59] [Timeline] release: 0:17
+[2023-05-25 14:19:00] [Timeline] press: 0:18
+[2023-05-25 14:19:01] [Timeline] slider clicked.
+[2023-05-25 14:19:01] [Timeline] release: 0:17
+[2023-05-25 14:19:03] [Timeline] press: 0:19
+[2023-05-25 14:19:04] [Timeline]slider grabbed.
+[2023-05-25 14:19:04] [Timeline] release: 0:15
+[2023-05-25 14:19:06] [Control panel] pasued
+[2023-05-25 14:19:06] [Timer] Time spent in this task: 00:10
+[2023-05-25 14:19:06] [Timeline] Ending Time = 0:16
+[2023-05-25 14:19:13] [Timer] Timer start！
+[2023-05-25 14:19:14] [Timeline] press: 0:00
+[2023-05-25 14:19:20] [Timeline]slider grabbed.
+[2023-05-25 14:19:20] [Timeline] release: 1:35
+[2023-05-25 14:19:21] [Control panel] pasued
+[2023-05-25 14:19:22] [Timer] Time spent in this task: 00:09
+[2023-05-25 14:19:22] [Timeline] Ending Time = 1:36
+[2023-05-25 14:19:40] [Timer] Timer start！
+[2023-05-25 14:19:41] [Timeline] press: 0:01
+[2023-05-25 14:19:46] [Timeline]slider grabbed.
+[2023-05-25 14:19:46] [Timeline] release: 0:44
+[2023-05-25 14:19:48] [Control panel] pasued
+[2023-05-25 14:19:48] [Timer] Time spent in this task: 00:08
+[2023-05-25 14:19:48] [Timeline] Ending Time = 0:45
+[2023-05-25 14:19:52] [Timer] Timer start！
+[2023-05-25 14:19:53] [Timeline] press: 0:45
+[2023-05-25 14:19:56] [Timeline]slider grabbed.
+[2023-05-25 14:19:56] [Timeline] release: 0:30
+[2023-05-25 14:19:57] [Control panel] pasued
+[2023-05-25 14:19:57] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:19:57] [Timeline] Ending Time = 0:31
+[2023-05-25 14:20:11] [Timer] Timer start！
+[2023-05-25 14:20:13] [Timeline] press: 0:01
+[2023-05-25 14:20:25] [Timeline]slider grabbed.
+[2023-05-25 14:20:25] [Timeline] release: 1:25
+[2023-05-25 14:20:27] [Control panel] pasued
+[2023-05-25 14:20:29] [Timer] Time spent in this task: 00:17
+[2023-05-25 14:20:29] [Timeline] Ending Time = 1:26
+[2023-05-25 14:20:56] [Timer] Timer start！
+[2023-05-25 14:20:58] [Timeline] press: 0:01
+[2023-05-25 14:21:06] [Timeline]slider grabbed.
+[2023-05-25 14:21:06] [Timeline] release: 1:37
+[2023-05-25 14:21:08] [Control panel] pasued
+[2023-05-25 14:21:09] [Timeline] press: 1:38
+[2023-05-25 14:21:10] [Timeline] slider clicked.
+[2023-05-25 14:21:10] [Timeline] release: 1:35
+[2023-05-25 14:21:11] [Timer] Time spent in this task: 00:15
+[2023-05-25 14:21:11] [Timeline] Ending Time = 1:35
+[2023-05-25 14:21:15] [Timer] Timer start！
+[2023-05-25 14:21:17] [Timeline] press: 1:36
+[2023-05-25 14:21:20] [Timeline]slider grabbed.
+[2023-05-25 14:21:20] [Timeline] release: 1:20
+[2023-05-25 14:21:21] [Control panel] pasued
+[2023-05-25 14:21:22] [Timer] Time spent in this task: 00:06
+[2023-05-25 14:21:22] [Timeline] Ending Time = 1:21
+[2023-05-25 14:21:31] [Timer] Timer start！
+[2023-05-25 14:21:32] [Timeline] press: 0:01
+[2023-05-25 14:21:49] [Timeline]slider grabbed.
+[2023-05-25 14:21:49] [Timeline] release: 0:54
+[2023-05-25 14:21:51] [Control panel] pasued
+[2023-05-25 14:21:55] [Timer] Time spent in this task: 00:24
+[2023-05-25 14:21:55] [Timeline] Ending Time = 0:56
+[2023-05-25 14:22:06] [Timer] Timer start！
+[2023-05-25 14:22:07] [Timeline] press: 0:00
+[2023-05-25 14:22:09] [Timeline]slider grabbed.
+[2023-05-25 14:22:09] [Timeline] release: 0:47
+[2023-05-25 14:22:11] [Control panel] pasued
+[2023-05-25 14:22:11] [Control panel] played
+[2023-05-25 14:22:13] [Control panel] pasued
+[2023-05-25 14:22:14] [Timer] Time spent in this task: 00:07
+[2023-05-25 14:22:14] [Timeline] Ending Time = 0:49
+[2023-05-25 14:22:18] [Timer] Timer start！
+[2023-05-25 14:22:19] [Timeline] press: 0:50
+[2023-05-25 14:22:21] [Timeline]slider grabbed.
+[2023-05-25 14:22:21] [Timeline] release: 0:34
+[2023-05-25 14:22:23] [Control panel] pasued
+[2023-05-25 14:22:24] [Timer] Time spent in this task: 00:06
+[2023-05-25 14:22:24] [Timeline] Ending Time = 0:35
+[2023-05-25 14:22:33] [Timer] Timer start！
+[2023-05-25 14:22:34] [Timeline] press: 0:01
+[2023-05-25 14:22:41] [Timeline]slider grabbed.
+[2023-05-25 14:22:41] [Timeline] release: 1:31
+[2023-05-25 14:22:43] [Control panel] pasued
+[2023-05-25 14:22:43] [Timer] Time spent in this task: 00:10
+[2023-05-25 14:22:43] [Timeline] Ending Time = 1:32
+[2023-05-25 14:22:55] [Timer] Timer start！
+[2023-05-25 14:22:56] [Timeline] press: 0:00
+[2023-05-25 14:22:58] [Timeline]slider grabbed.
+[2023-05-25 14:22:58] [Timeline] release: 0:47
+[2023-05-25 14:23:00] [Control panel] pasued
+[2023-05-25 14:23:00] [Timer] Time spent in this task: 00:05
+[2023-05-25 14:23:00] [Timeline] Ending Time = 0:48
+[2023-05-25 14:23:06] [Timer] Timer start！
+[2023-05-25 14:23:07] [Timeline] press: 0:48
+[2023-05-25 14:23:10] [Timeline]slider grabbed.
+[2023-05-25 14:23:10] [Timeline] release: 0:23
+[2023-05-25 14:23:14] [Control panel] pasued
+[2023-05-25 14:23:14] [Timer] Time spent in this task: 00:08
+[2023-05-25 14:23:14] [Timeline] Ending Time = 0:26
+[2023-05-25 14:23:19] [Timer] Timer start！
+[2023-05-25 14:23:20] [Timeline] press: 0:00
+[2023-05-25 14:23:24] [Timeline]slider grabbed.
+[2023-05-25 14:23:24] [Timeline] release: 1:11
+[2023-05-25 14:23:26] [Timeline] press: 1:11
+[2023-05-25 14:23:27] [Timeline]slider grabbed.
+[2023-05-25 14:23:27] [Timeline] release: 1:11
+[2023-05-25 14:23:30] [Control panel] pasued
+[2023-05-25 14:23:31] [Timer] Time spent in this task: 00:11
+[2023-05-25 14:23:31] [Timeline] Ending Time = 1:14

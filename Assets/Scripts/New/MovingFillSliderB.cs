@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class MovingFillSlider : MonoBehaviour
+public class MovingFillSliderB : MonoBehaviour
 {
     // 关联的 Slider 组件
     public Slider slider;

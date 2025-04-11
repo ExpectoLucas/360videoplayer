@@ -11,7 +11,8 @@ public class TimeHandler : MonoBehaviour
     public VideoPlayer vp;
     public Text timeCurr;
     public Text timeTotal;
-    public Slider timeSlider;
+    public Slider timeSliderB;
+    public Slider timeSliderS;
 
     public VideoPlayerUIController videoplayerController;
 
@@ -38,7 +39,8 @@ public class TimeHandler : MonoBehaviour
             timeCurr.text = (System.Math.Floor(vp.time / 60)).ToString() + ':' +
                             System.Math.Floor(vp.time % 60).ToString("00");
 
-            timeSlider.value = (float)vp.frame / (float)vp.frameCount;
+            timeSliderB.value = (float)vp.frame / (float)vp.frameCount;
+            timeSliderS.value = (float)vp.frame / (float)vp.frameCount;
         }
         else
         {
@@ -56,7 +58,8 @@ public class TimeHandler : MonoBehaviour
                 // Adjust time displays
                 timeCurr.text = (System.Math.Floor(vp.time / 60)).ToString() + ':' + System.Math.Floor(vp.time % 60).ToString("00");
 
-                timeSlider.value = ((float)vp.time / (float)vp.length);
+                timeSliderB.value = ((float)vp.time / (float)vp.length);
+                timeSliderS.value = ((float)vp.time / (float)vp.length);
             }
             yield return new WaitForSeconds(0.5f);
         }
@@ -126,7 +129,7 @@ public class TimeHandler : MonoBehaviour
     {
        // Debug.Log("Length = " + vp.length);
        // Debug.Log("Slider pos = " + (float)(vp.time / vp.length));
-        double time = (timeSlider.normalizedValue) * vp.length;
+        double time = (timeSliderB.normalizedValue) * vp.length;
         timeCurr.text = (System.Math.Floor(time / 60)).ToString() + ':' + System.Math.Floor(time % 60).ToString("00");
        //Debug.Log("Slider value = " + timeCurr.text);
 		

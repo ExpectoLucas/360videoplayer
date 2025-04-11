@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class MovingHandleSlider : MonoBehaviour
+public class MovingHandleSliderB : MonoBehaviour
 {
     // 与 Slider 组件关联（确保 Handle Rect 指向红色小圆点，否则拖动会失效）
     public Slider slider;

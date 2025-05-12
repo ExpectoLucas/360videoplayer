@@ -1,66 +1,112 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;  // 用于 IPointerDownHandler / IPointerUpHandler
 
-public class MovingHandleSliderB : MonoBehaviour
+public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    // 与 Slider 组件关联（确保 Handle Rect 指向红色小圆点，否则拖动会失效）
+    [Header("UI 与 摄像机设置")]
     public Slider slider;
-
-    // 用于获取头部俯仰角（例如 VR 摄像机或主摄像机的 Transform）
     public Transform headTransform;
-
-    // 进度条容器（用于计算水平范围和垂直范围），例如 Fill Area 或 Slider 的轨道
     public RectTransform container;
+    [Tooltip("用于获取垂直 FOV 的摄像机；如果不填，会自动用 Camera.main")]
+    public Camera vrCamera;
 
-    // 固定的 Handle 尺寸（单位像素），用于保持红点形状不变
-    public float fixedHandleSize = 20f;
+    [Header("红点基础设置")]
+    [Tooltip("红点横向（宽度）固定像素")]
+    public float fixedHandleWidth = 10f;
 
-    // 内部缓存 Slider 的 Handle RectTransform
+    [Header("轨迹历史设置")]
+    [Tooltip("用于记录轨迹的预制体，需要是一个 UI Image Prefab")]
+    public GameObject trailPrefab;
+    [Tooltip("记录轨迹的时间间隔（秒），低于此间隔不再重复记录")]
+    public float recordInterval = 0.1f;
+
     private RectTransform handleRect;
+    private float recordTimer = 0f;
+    private bool isDragging = false;
 
     void Start()
     {
-        // 检查必要的引用
-        if (slider == null || headTransform == null || container == null)
+        if (slider == null || headTransform == null || container == null || trailPrefab == null)
         {
-            Debug.LogError("请在 Inspector 中设置 slider、headTransform 和 container！");
+            Debug.LogError("请在 Inspector 中设置 slider、headTransform、container 和 trailPrefab！");
             enabled = false;
             return;
         }
+
         handleRect = slider.handleRect;
         if (handleRect == null)
         {
-            Debug.LogError("Slider 的 handleRect 为空，请在 Slider 组件上指定红色小圆点！");
+            Debug.LogError("Slider.handleRect 为空，请在 Slider 上指定红点 RectTransform！");
             enabled = false;
             return;
         }
+
+        if (vrCamera == null)
+            vrCamera = Camera.main;
     }
 
     void LateUpdate()
     {
-        // ① 将 Handle 的 anchors 固定在容器左侧中间，确保定位参考点正确
+        // 1. 更新 handle 的锚点/尺寸/位置
         handleRect.anchorMin = new Vector2(0f, 0.5f);
         handleRect.anchorMax = new Vector2(0f, 0.5f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
-        handleRect.sizeDelta = new Vector2(fixedHandleSize, fixedHandleSize);
 
-        // ② 计算横向位置：以 container 的宽度为范围，
-        // 当 slider.normalizedValue 为 0 时，x = 0（即容器左边缘），为 1 时 x = container.width
-        float containerWidth = container.rect.width;
-        float horizontalX = slider.normalizedValue * containerWidth;
+        float w = container.rect.width;
+        float h = container.rect.height;
+        float fov = vrCamera != null ? vrCamera.fieldOfView : 60f;
+        float handleH = h * (fov / 180f);
 
-        // ③ 计算垂直位置：根据 headTransform 的俯仰角计算
-        // 取 headTransform 的 x 轴旋转角（注意 Unity 中 eulerAngles.x 范围是 0~360，要转换到 -180~180）
+        handleRect.sizeDelta = new Vector2(fixedHandleWidth, handleH);
+
+        float x = slider.normalizedValue * w;
         float pitch = headTransform.rotation.eulerAngles.x;
-        if (pitch > 180f)
-            pitch -= 360f;
-        // 设定映射：当 pitch = 0（水平看）时，红点在中间，偏移 0；
-        // 当 pitch = -90（向上看 90°）时，偏移 +container.height/2（上移）；
-        // 当 pitch = 90（向下看 90°）时，偏移 -container.height/2（下移）。
-        float containerHeight = container.rect.height;
-        float verticalOffset = -(pitch / 90f) * (containerHeight / 2f);
+        if (pitch > 180f) pitch -= 360f;
+        float y = -(pitch / 90f) * (h / 2f);
 
-        // ④ 合成最终位置：横坐标由 Slider 进度决定，纵坐标由头部俯仰计算
-        handleRect.anchoredPosition = new Vector2(horizontalX, verticalOffset);
+        handleRect.anchoredPosition = new Vector2(x, y);
+
+        // 2. 只有当不在拖拽中，才累加计时器并记录轨迹
+        if (!isDragging)
+        {
+            recordTimer += Time.deltaTime;
+            if (recordTimer >= recordInterval)
+            {
+                recordTimer = 0f;
+                CreateTrailSegment(x, y, handleH * 0.5f);
+
+                // **关键：生成完轨迹后，把 handle 放到最后**
+                handleRect.transform.SetAsLastSibling();
+            }
+        }
+    }
+
+    private void CreateTrailSegment(float x, float y, float height)
+    {
+        GameObject go = Instantiate(trailPrefab, container);
+        RectTransform rt = go.GetComponent<RectTransform>();
+
+        rt.anchorMin = handleRect.anchorMin;
+        rt.anchorMax = handleRect.anchorMax;
+        rt.pivot = handleRect.pivot;
+        rt.sizeDelta = new Vector2(fixedHandleWidth * 0.5f, height);
+        rt.anchoredPosition = new Vector2(x, y);
+
+
+    }
+
+    // 当用户在 Slider 上按下（开始拖拽）时调用
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        isDragging = true;
+        recordTimer = 0f; // 拖拽开始时重置计时器
+    }
+
+    // 当用户松开鼠标或手柄时调用
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        isDragging = false;
+        recordTimer = 0f; // 结束拖拽后也清零，保证间隔从 0 开始
     }
 }

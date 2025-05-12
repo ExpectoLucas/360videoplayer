@@ -3,30 +3,32 @@ using UnityEngine.UI;
 
 public class MovingHandleSliderS : MonoBehaviour
 {
-    // 与 Slider 组件关联（红点拖动功能需保持 Slider.handleRect 不为空）
+    [Header("UI 与 摄像机设置")]
     public Slider slider;
-
-    // 用于获取头部信息的 Transform（例如 VR 摄像机或主摄像机），用于计算左右旋转（yaw）
     public Transform headTransform;
-
-    // 进度条容器（如 Fill Area 或 Slider 轨道），建议红点作为该容器的子物体
     public RectTransform container;
+    [Tooltip("用于获取 FOV 的摄像机；若不填，会自动用 Camera.main")]
+    public Camera vrCamera;
 
-    // 固定的红点尺寸（单位像素），保证红点始终为正圆
+    [Header("红点基础设置")]
+    [Tooltip("红点竖直方向（高度）固定像素")]
     public float fixedHandleSize = 20f;
 
-    // 内部缓存红点的 RectTransform（即 Slider.handleRect）
-    private RectTransform handleRect;
+    [Header("轨迹历史设置")]
+    [Tooltip("UI Image Prefab，用于记录轨迹，每次生成一个条状片段")]
+    public GameObject trailPrefab;
+    [Tooltip("记录轨迹的时间间隔（秒），小于此间隔不再重复记录）")]
+    public float recordInterval = 0.1f;
 
-    // 记录初始头部 yaw，用于作相对角度的计算
+    private RectTransform handleRect;
+    private float recordTimer = 0f;
     private float initialYaw;
 
     void Start()
     {
-        // 检查必要引用
-        if (slider == null || headTransform == null || container == null)
+        if (slider == null || headTransform == null || container == null || trailPrefab == null)
         {
-            Debug.LogError("请在 Inspector 中设置 slider、headTransform 和 container！");
+            Debug.LogError("请在 Inspector 中设置 slider、headTransform、container 和 trailPrefab！");
             enabled = false;
             return;
         }
@@ -34,54 +36,75 @@ public class MovingHandleSliderS : MonoBehaviour
         handleRect = slider.handleRect;
         if (handleRect == null)
         {
-            Debug.LogError("Slider 的 handleRect 为空，请在 Slider 组件上指定红色小圆点！");
+            Debug.LogError("Slider.handleRect 为空，请在 Slider 组件上指定红点 RectTransform！");
             enabled = false;
             return;
         }
 
-        // 建议将红点（handle）的父物体设置为 container，这样计算的局部坐标就正确
-        if (handleRect.parent != container)
-            Debug.LogWarning("建议将红点（handle）的父物体设置为 container，以便计算的坐标更准确！");
+        if (vrCamera == null)
+            vrCamera = Camera.main;
 
-        // 记录初始头部 yaw（转换到 -180～180 范围）
-        float initYaw = headTransform.rotation.eulerAngles.y;
-        if (initYaw > 180f)
-            initYaw -= 360f;
-        initialYaw = initYaw;
+        // 记录初始头部 yaw 作为零点
+        float y = headTransform.rotation.eulerAngles.y;
+        if (y > 180f) y -= 360f;
+        initialYaw = y;
     }
 
     void LateUpdate()
     {
-        // ① 固定红点的 RectTransform 属性，
-        // 将 anchors 固定为底部中间，即 (0.5, 0)；pivot 设为 (0.5, 0.5)
-        handleRect.anchorMin = new Vector2(0.5f, 0f);
+        // —— 1. 更新 handle 的 anchors/pivot/size/position —— 
+        float containerW = container.rect.width;
+        float containerH = container.rect.height;
+
+        // 计算 handle 宽度 = containerW × (FOV / 360)
+        float fov = vrCamera.fieldOfView;
+        float handleW = containerW * (fov / 360f);
+
+        handleRect.anchorMin = new Vector2(0.5f, 0f); // 底部中间
         handleRect.anchorMax = new Vector2(0.5f, 0f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
-        handleRect.sizeDelta = new Vector2(fixedHandleSize, fixedHandleSize);
+        handleRect.sizeDelta = new Vector2(handleW, fixedHandleSize);
 
-        // ② 获取容器的尺寸
-        float containerWidth = container.rect.width;
-        float containerHeight = container.rect.height;
+        // 垂直位置：slider 进度从底部往上
+        float verticalY = slider.normalizedValue * containerH;
 
-        // ③ 计算垂直位置：由 slider.normalizedValue 决定
-        // 当 slider.normalizedValue 为 0，verticalY 为 0（容器底部）；为 1，verticalY 为 containerHeight（容器顶部）
-        float verticalY = slider.normalizedValue * containerHeight;
-
-        // ④ 计算水平位置：根据头部左右转向（yaw）循环移动
-        // 获取当前 headTransform 的 yaw（转换到 -180～180 范围）
+        // 水平位置：头部 yaw 循环映射
         float currentYaw = headTransform.rotation.eulerAngles.y;
-        if (currentYaw > 180f)
-            currentYaw -= 360f;
-        // 计算与初始 yaw 的相对角度
-        float relativeYaw = currentYaw - initialYaw;
-        // 将 relativeYaw 包装到 [-180,180] 范围内
-        relativeYaw = Mathf.Repeat(relativeYaw + 180f, 360f) - 180f;
-        // 归一化：当 relativeYaw == 0 时映射为 0.5（容器中间），-180 映射到 0，+180 映射到 1
-        float normalizedYaw = (relativeYaw + 180f) / 360f;
-        // 由于锚点在容器中间，水平偏移 = (normalizedYaw - 0.5) * containerWidth
-        float horizontalX = (normalizedYaw - 0.5f) * containerWidth;
+        if (currentYaw > 180f) currentYaw -= 360f;
+        float relYaw = currentYaw - initialYaw;
+        relYaw = Mathf.Repeat(relYaw + 180f, 360f) - 180f;
+        float normYaw = (relYaw + 180f) / 360f;
+        // 锚点在中间，偏移 = (normYaw - 0.5) × 宽度
+        float horizontalX = (normYaw - 0.5f) * containerW;
 
-        // ⑤ 合成最终位置，注意：此处的 anchoredPosition 是相对于容器底部中间
         handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
+
+        // —— 2. 按间隔记录轨迹 —— 
+        recordTimer += Time.deltaTime;
+        if (recordTimer >= recordInterval)
+        {
+            recordTimer = 0f;
+            CreateTrailSegment(horizontalX, verticalY , handleW * 0.5f);
+            // 生成后把 handle 提到最上层
+            handleRect.transform.SetAsLastSibling();
+        }
+    }
+
+    private void CreateTrailSegment(float x, float y, float width)
+    {
+        // 实例化一个 prefab 到 container
+        GameObject go = Instantiate(trailPrefab, container);
+        RectTransform rt = go.GetComponent<RectTransform>();
+
+        // 复用 handle 的 anchors 和 pivot
+        rt.anchorMin = handleRect.anchorMin;
+        rt.anchorMax = handleRect.anchorMax;
+        rt.pivot = handleRect.pivot;
+
+        // 宽度 = handleWidth 的一半，高度与 handle 相同
+        rt.sizeDelta = new Vector2(width, fixedHandleSize * 0.5f);
+
+        // 位置对齐到 handle 当时的位置
+        rt.anchoredPosition = new Vector2(x, y);
     }
 }

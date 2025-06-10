@@ -80,6 +80,13 @@ public class MovingHandleSliderS : MonoBehaviour
         // 锚点在中间，偏移 = (normYaw - 0.5) × 宽度
         float horizontalX = (normYaw - 0.5f) * containerW;
 
+        // 若 handle 超过边界，则循环到另一侧
+        float halfW = containerW * 0.5f;
+        if (horizontalX + handleW * 0.5f > halfW)
+            horizontalX -= containerW;
+        else if (horizontalX - handleW * 0.5f < -halfW)
+            horizontalX += containerW;
+
         handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
 
         // —— 2. 按间隔记录轨迹 —— 

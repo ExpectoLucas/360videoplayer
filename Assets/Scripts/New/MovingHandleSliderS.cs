@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class MovingHandleSliderS : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class MovingHandleSliderS : MonoBehaviour
     public RectTransform container;
     [Tooltip("用于获取 FOV 的摄像机；若不填，会自动用 Camera.main")]
     public Camera vrCamera;
+    [Tooltip("视频播放器，用于检查播放状态")]
+    public VideoPlayer videoPlayer;
 
     [Header("红点基础设置")]
     [Tooltip("红点竖直方向（高度）固定像素")]
@@ -80,13 +83,16 @@ public class MovingHandleSliderS : MonoBehaviour
         handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
 
         // —— 2. 按间隔记录轨迹 —— 
-        recordTimer += Time.deltaTime;
-        if (recordTimer >= recordInterval)
+        if (videoPlayer != null && videoPlayer.isPlaying)
         {
-            recordTimer = 0f;
-            CreateTrailSegment(horizontalX, verticalY , handleW * 0.5f);
-            // 生成后把 handle 提到最上层
-            handleRect.transform.SetAsLastSibling();
+            recordTimer += Time.deltaTime;
+            if (recordTimer >= recordInterval)
+            {
+                recordTimer = 0f;
+                CreateTrailSegment(horizontalX, verticalY, handleW * 0.5f);
+                // 生成后把 handle 提到最上层
+                handleRect.transform.SetAsLastSibling();
+            }
         }
     }
 

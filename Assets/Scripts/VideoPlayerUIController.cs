@@ -24,8 +24,8 @@ public class VideoPlayerUIController : MonoBehaviour
     public static bool playing = false;
     private bool wasPlaying = false;
     private bool started = false;
-    public GameObject thumbnailCanvas;
-    public RawImage thumbnailImage;
+    //public GameObject thumbnailCanvas;
+    //public RawImage thumbnailImage;
     
     private float startTime; // Start timer
     private float elapsedTime;
@@ -45,7 +45,7 @@ public class VideoPlayerUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thumbnailCanvas.SetActive(false);
+        //thumbnailCanvas.SetActive(false);
         //PlayPauseButton(); //Enabled. Pause the video when the scene is loaded
     }
 
@@ -59,7 +59,7 @@ public class VideoPlayerUIController : MonoBehaviour
             if (timer < 0.5f)
             {
                 videoPlayer.frame = (long)(timeSlider.value * videoPlayer.frameCount);
-                thumbnailImage.texture = videoPlayer.texture;
+                //thumbnailImage.texture = videoPlayer.texture;
                 //timeHandler.UpdateDraggedTime();
                 timer = 1.0f;
             }
@@ -147,7 +147,7 @@ public class VideoPlayerUIController : MonoBehaviour
         videoPlayer.Pause();
         playing = false;
         sliderdown = true;
-        thumbnailCanvas.SetActive(true);
+        //thumbnailCanvas.SetActive(true);
         
         StartTimer();
         Debug.Log("[Timeline] press: " + timeHandler.timeCurr.text);
@@ -169,7 +169,7 @@ public class VideoPlayerUIController : MonoBehaviour
         }
         sliderdown = false;
 
-        thumbnailCanvas.SetActive(false);
+        //thumbnailCanvas.SetActive(false);
         
         StopTimer();
         Debug.Log("[Timeline] release: " + timeHandler.timeCurr.text);

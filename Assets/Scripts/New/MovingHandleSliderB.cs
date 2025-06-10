@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;  // 用于 IPointerDownHandler / IPointerUpHandler
+using UnityEngine.Video;  // 添加 Video 命名空间
 
 public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -10,6 +11,8 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
     public RectTransform container;
     [Tooltip("用于获取垂直 FOV 的摄像机；如果不填，会自动用 Camera.main")]
     public Camera vrCamera;
+    [Tooltip("视频播放器，用于检查播放状态")]
+    public VideoPlayer videoPlayer;
 
     [Header("红点基础设置")]
     [Tooltip("红点横向（宽度）固定像素")]
@@ -67,8 +70,8 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
         handleRect.anchoredPosition = new Vector2(x, y);
 
-        // 2. 只有当不在拖拽中，才累加计时器并记录轨迹
-        if (!isDragging)
+        // 2. 只有当不在拖拽中且视频正在播放时，才累加计时器并记录轨迹
+        if (!isDragging && videoPlayer != null && videoPlayer.isPlaying)
         {
             recordTimer += Time.deltaTime;
             if (recordTimer >= recordInterval)

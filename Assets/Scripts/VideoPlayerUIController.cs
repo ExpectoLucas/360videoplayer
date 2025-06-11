@@ -9,6 +9,7 @@ public class VideoPlayerUIController : MonoBehaviour
 {
 
     public Slider timeSlider;
+    public Slider timeSlider2; // 第二个时间滑块
     public VideoPlayer videoPlayer;
     public GameObject videoSphere;
     public TimeHandler timeHandler;
@@ -21,6 +22,7 @@ public class VideoPlayerUIController : MonoBehaviour
     private float skippingTime = 10;
     float rotationSpeed = 2f;
     public bool sliderdown = false;
+    public bool slider2down = false; // 第二个滑块的按下状态
     public static bool playing = false;
     private bool wasPlaying = false;
     private bool started = false;
@@ -36,31 +38,70 @@ public class VideoPlayerUIController : MonoBehaviour
     
     public float videoStartTime = 0.0f;
     
-    // set video URL for different scenes
-    public void SetVideoURL(string videoSource)
-    {
-        string videoURL = videoSource.ToString();
-    }
+    private bool isUpdatingSlider = false; // 防止循环更新
 
     // Start is called before the first frame update
     void Start()
     {
+        // 添加滑块值改变事件监听
+        timeSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        timeSlider2.onValueChanged.AddListener(OnSlider2ValueChanged);
         //thumbnailCanvas.SetActive(false);
         //PlayPauseButton(); //Enabled. Pause the video when the scene is loaded
+    }
+
+    // 第一个滑块值改变时的回调
+    private void OnSliderValueChanged(float value)
+    {
+        if (!isUpdatingSlider && sliderdown)
+        {
+            isUpdatingSlider = true;
+            timeSlider2.value = value;
+            isUpdatingSlider = false;
+        }
+    }
+
+    // 第二个滑块值改变时的回调
+    private void OnSlider2ValueChanged(float value)
+    {
+        if (!isUpdatingSlider && slider2down)
+        {
+            isUpdatingSlider = true;
+            timeSlider.value = value;
+            isUpdatingSlider = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // If we are using the time slider, do this on every update
+        // 如果视频正在播放，同步更新两个滑块的值
+        if (playing && !sliderdown && !slider2down)
+        {
+            float normalizedTime = (float)(videoPlayer.time / videoPlayer.length);
+            timeSlider.value = normalizedTime;
+            timeSlider2.value = normalizedTime;
+        }
+
+        // 处理第一个滑块
         if (sliderdown)
         {
-            // Timer is needed to let the videoplayer load. If there is no timer, the update will happen too fast, and the player will not load in time, making it unrsponsive.
             if (timer < 0.5f)
             {
                 videoPlayer.frame = (long)(timeSlider.value * videoPlayer.frameCount);
-                //thumbnailImage.texture = videoPlayer.texture;
-                //timeHandler.UpdateDraggedTime();
+                timer = 1.0f;
+            }
+            else
+            {
+                timer -= Time.deltaTime;
+            }
+        }
+        // 处理第二个滑块
+        else if (slider2down)
+        {
+            if (timer < 0.5f)
+            {
+                videoPlayer.frame = (long)(timeSlider2.value * videoPlayer.frameCount);
                 timer = 1.0f;
             }
             else
@@ -210,5 +251,42 @@ public class VideoPlayerUIController : MonoBehaviour
 
         videoSphere.transform.Rotate(Vector3.up * xAxisRotation, Space.World);
         videoSphere.transform.Rotate(Vector3.right * -yAxisRotation, Space.World);
+    }
+
+    // 第二个滑块的相关方法
+    public void Slider2Down()
+    {
+        GetComponent<UITransform>().enabled = false;
+        wasPlaying = videoPlayer.isPlaying;
+        videoPlayer.Pause();
+        playing = false;
+        slider2down = true;
+        StartTimer();
+        Debug.Log("[Timeline2] press: " + timeHandler.timeCurr.text);
+    }
+
+    public void Slider2Up()
+    {
+        videoPlayer.frame = (long)(timeSlider2.value * videoPlayer.frameCount);
+        GetComponent<UITransform>().enabled = true;
+        if (wasPlaying)
+        {
+            videoPlayer.Play();
+            playing = true;
+            playPauseButton.GetComponent<Image>().sprite = pauseImage;
+            wasPlaying = false;
+        }
+        slider2down = false;
+        StopTimer();
+        Debug.Log("[Timeline2] release: " + timeHandler.timeCurr.text);
+    }
+
+    // 在组件销毁时移除事件监听
+    void OnDestroy()
+    {
+        if (timeSlider != null)
+            timeSlider.onValueChanged.RemoveListener(OnSliderValueChanged);
+        if (timeSlider2 != null)
+            timeSlider2.onValueChanged.RemoveListener(OnSlider2ValueChanged);
     }
 }

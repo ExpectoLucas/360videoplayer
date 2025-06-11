@@ -24,6 +24,7 @@ public class MovingHandleSliderS : MonoBehaviour
     public float recordInterval = 0.1f;
 
     private RectTransform handleRect;
+    private RectTransform oppositeHandleRect;  // 用于边界跨越时的额外handle
     private float recordTimer = 0f;
     private float initialYaw;
 
@@ -44,6 +45,9 @@ public class MovingHandleSliderS : MonoBehaviour
             return;
         }
 
+        // 创建用于边界跨越的额外handle
+        CreateBoundaryHandles();
+
         if (vrCamera == null)
             vrCamera = Camera.main;
 
@@ -51,6 +55,15 @@ public class MovingHandleSliderS : MonoBehaviour
         float y = headTransform.rotation.eulerAngles.y;
         if (y > 180f) y -= 360f;
         initialYaw = y;
+    }
+
+    private void CreateBoundaryHandles()
+    {
+        // 创建用于边界跨越的额外handle
+        GameObject oppositeHandle = Instantiate(handleRect.gameObject, handleRect.parent);
+        oppositeHandle.name = "OppositeHandle";
+        oppositeHandleRect = oppositeHandle.GetComponent<RectTransform>();
+        oppositeHandleRect.gameObject.SetActive(false);
     }
 
     void LateUpdate()
@@ -63,10 +76,14 @@ public class MovingHandleSliderS : MonoBehaviour
         float fov = vrCamera.fieldOfView;
         float handleW = containerW * (fov / 360f);
 
-        handleRect.anchorMin = new Vector2(0.5f, 0f); // 底部中间
+        // 设置所有handle的基础属性
+        handleRect.anchorMin = new Vector2(0.5f, 0f);
         handleRect.anchorMax = new Vector2(0.5f, 0f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
         handleRect.sizeDelta = new Vector2(handleW, fixedHandleSize);
+        oppositeHandleRect.anchorMin = handleRect.anchorMin;
+        oppositeHandleRect.anchorMax = handleRect.anchorMax;
+        oppositeHandleRect.pivot = handleRect.pivot;
 
         // 垂直位置：slider 进度从底部往上
         float verticalY = slider.normalizedValue * containerH;
@@ -77,10 +94,55 @@ public class MovingHandleSliderS : MonoBehaviour
         float relYaw = currentYaw - initialYaw;
         relYaw = Mathf.Repeat(relYaw + 180f, 360f) - 180f;
         float normYaw = (relYaw + 180f) / 360f;
-        // 锚点在中间，偏移 = (normYaw - 0.5) × 宽度
         float horizontalX = (normYaw - 0.5f) * containerW;
 
-        handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
+        // 计算handle是否跨越边界
+        float handleHalfWidth = handleW * 0.5f;
+        float leftEdge  = container.rect.xMin;   // 等价于本地坐标的最左侧
+        float rightEdge = container.rect.xMax;   // 等价于本地坐标的最右侧
+
+        float handleLeftEdge = horizontalX - handleHalfWidth;
+        float handleRightEdge = horizontalX + handleHalfWidth;
+
+        if (handleLeftEdge < leftEdge)
+        {
+            // 计算跨越左边界的部分
+            float overflow = leftEdge - handleLeftEdge;
+            float mainHandleWidth = handleW - overflow;
+            float oppositeHandleWidth = overflow;
+
+            // 设置主handle
+            handleRect.sizeDelta = new Vector2(mainHandleWidth, fixedHandleSize);
+            handleRect.anchoredPosition = new Vector2(leftEdge + mainHandleWidth * 0.5f, verticalY);
+
+            // 设置对侧handle（在右边）
+            oppositeHandleRect.sizeDelta = new Vector2(oppositeHandleWidth, fixedHandleSize);
+            oppositeHandleRect.anchoredPosition = new Vector2(rightEdge - oppositeHandleWidth * 0.5f, verticalY);
+            oppositeHandleRect.gameObject.SetActive(true);
+        }
+        else if (handleRightEdge > rightEdge)
+        {
+            // 计算跨越右边界的部分
+            float overflow = handleRightEdge - rightEdge;
+            float mainHandleWidth = handleW - overflow;
+            float oppositeHandleWidth = overflow;
+
+            // 设置主handle
+            handleRect.sizeDelta = new Vector2(mainHandleWidth, fixedHandleSize);
+            handleRect.anchoredPosition = new Vector2(rightEdge - mainHandleWidth * 0.5f, verticalY);
+
+            // 设置对侧handle（在左边）
+            oppositeHandleRect.sizeDelta = new Vector2(oppositeHandleWidth, fixedHandleSize);
+            oppositeHandleRect.anchoredPosition = new Vector2(leftEdge + oppositeHandleWidth * 0.5f, verticalY);
+            oppositeHandleRect.gameObject.SetActive(true);
+        }
+        else
+        {
+            // 正常情况，只显示主handle
+            handleRect.sizeDelta = new Vector2(handleW, fixedHandleSize);
+            handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
+            oppositeHandleRect.gameObject.SetActive(false);
+        }
 
         // —— 2. 按间隔记录轨迹 —— 
         if (videoPlayer != null && videoPlayer.isPlaying)
@@ -89,9 +151,29 @@ public class MovingHandleSliderS : MonoBehaviour
             if (recordTimer >= recordInterval)
             {
                 recordTimer = 0f;
-                CreateTrailSegment(horizontalX, verticalY, handleW * 0.5f);
+                
+                // 根据handle的状态创建轨迹
+                if (horizontalX - handleHalfWidth < leftEdge)
+                {
+                    // 跨越左边界时，创建两个轨迹
+                    CreateTrailSegment(leftEdge + handleRect.sizeDelta.x * 0.5f, verticalY, handleRect.sizeDelta.x * 0.5f);
+                    CreateTrailSegment(rightEdge - oppositeHandleRect.sizeDelta.x * 0.5f, verticalY, oppositeHandleRect.sizeDelta.x * 0.5f);
+                }
+                else if (horizontalX + handleHalfWidth > rightEdge)
+                {
+                    // 跨越右边界时，创建两个轨迹
+                    CreateTrailSegment(rightEdge - handleRect.sizeDelta.x * 0.5f, verticalY, handleRect.sizeDelta.x * 0.5f);
+                    CreateTrailSegment(leftEdge + oppositeHandleRect.sizeDelta.x * 0.5f, verticalY, oppositeHandleRect.sizeDelta.x * 0.5f);
+                }
+                else
+                {
+                    // 正常情况，创建一个轨迹
+                    CreateTrailSegment(horizontalX, verticalY, handleW * 0.5f);
+                }
+
                 // 生成后把 handle 提到最上层
                 handleRect.transform.SetAsLastSibling();
+                oppositeHandleRect.transform.SetAsLastSibling();
             }
         }
     }

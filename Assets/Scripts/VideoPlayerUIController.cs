@@ -7,7 +7,10 @@ using UnityEngine.Video;
 
 public class VideoPlayerUIController : MonoBehaviour
 {
+    [Header("用户信息")]
+    public string userName = "User";  // 用户名，可在 Inspector 中设置
 
+    [Header("UI 组件")]
     public Slider timeSlider;
     public Slider timeSlider2; // 第二个时间滑块
     public VideoPlayer videoPlayer;

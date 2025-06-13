@@ -55,6 +55,12 @@ public class MovingHandleSliderS : MonoBehaviour
         float y = headTransform.rotation.eulerAngles.y;
         if (y > 180f) y -= 360f;
         initialYaw = y;
+
+        // 初始化 TrailDataManager
+        if (videoPlayer != null)
+        {
+            TrailDataManager.Instance.Initialize(videoPlayer);
+        }
     }
 
     private void CreateBoundaryHandles()
@@ -151,6 +157,19 @@ public class MovingHandleSliderS : MonoBehaviour
             if (recordTimer >= recordInterval)
             {
                 recordTimer = 0f;
+                
+                // 计算当前水平角度（相对于中点）
+                float trailYaw = headTransform.rotation.eulerAngles.y;
+                if (trailYaw > 180f) trailYaw -= 360f;
+                float trailRelYaw = trailYaw - initialYaw;
+                trailRelYaw = Mathf.Repeat(trailRelYaw + 180f, 360f) - 180f;
+
+                // 记录轨迹点
+                TrailDataManager.Instance.AddTrailPoint(
+                    (float)videoPlayer.time,
+                    trailRelYaw,
+                    true  // isHorizontal = true for S slider
+                );
                 
                 // 根据handle的状态创建轨迹
                 if (horizontalX - handleHalfWidth < leftEdge)

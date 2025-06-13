@@ -919,6 +919,11 @@ PrefabInstance:
       objectReference: {fileID: 862103600}
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
+      propertyPath: userName
+      value: Lucas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
       propertyPath: videoURL
       value: C:\Users\96412\Downloads\OneDrive_1_2025-4-4\20180615_monkey cinema_focal
         manny canada_injected_360.mp4

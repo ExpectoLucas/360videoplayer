@@ -47,6 +47,12 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
         if (vrCamera == null)
             vrCamera = Camera.main;
+
+        // 初始化 TrailDataManager
+        if (videoPlayer != null)
+        {
+            TrailDataManager.Instance.Initialize(videoPlayer);
+        }
     }
 
     void LateUpdate()
@@ -77,6 +83,20 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
             if (recordTimer >= recordInterval)
             {
                 recordTimer = 0f;
+
+                // 计算当前俯仰角度（相对于水平点）
+                pitch = headTransform.rotation.eulerAngles.x;
+                if (pitch > 180f) pitch -= 360f;
+                // 限制在 -90 到 90 度范围内
+                pitch = Mathf.Clamp(pitch, -90f, 90f);
+
+                // 记录轨迹点
+                TrailDataManager.Instance.AddTrailPoint(
+                    (float)videoPlayer.time,
+                    pitch,
+                    false  // isHorizontal = false for B slider
+                );
+
                 CreateTrailSegment(x, y, handleH * 0.5f);
 
                 // **关键：生成完轨迹后，把 handle 放到最后**

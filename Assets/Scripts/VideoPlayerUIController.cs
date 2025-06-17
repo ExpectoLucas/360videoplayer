@@ -47,8 +47,10 @@ public class VideoPlayerUIController : MonoBehaviour
     void Start()
     {
         // 添加滑块值改变事件监听
-        timeSlider.onValueChanged.AddListener(OnSliderValueChanged);
-        timeSlider2.onValueChanged.AddListener(OnSlider2ValueChanged);
+        if (timeSlider != null)
+            timeSlider.onValueChanged.AddListener(OnSliderValueChanged);
+        if (timeSlider2 != null)
+            timeSlider2.onValueChanged.AddListener(OnSlider2ValueChanged);
         //thumbnailCanvas.SetActive(false);
         //PlayPauseButton(); //Enabled. Pause the video when the scene is loaded
     }
@@ -56,10 +58,11 @@ public class VideoPlayerUIController : MonoBehaviour
     // 第一个滑块值改变时的回调
     private void OnSliderValueChanged(float value)
     {
-        if (!isUpdatingSlider && sliderdown)
+        if (!isUpdatingSlider)
         {
             isUpdatingSlider = true;
-            timeSlider2.value = value;
+            if (timeSlider2 != null)
+                timeSlider2.value = value;
             isUpdatingSlider = false;
         }
     }
@@ -67,10 +70,11 @@ public class VideoPlayerUIController : MonoBehaviour
     // 第二个滑块值改变时的回调
     private void OnSlider2ValueChanged(float value)
     {
-        if (!isUpdatingSlider && slider2down)
+        if (!isUpdatingSlider)
         {
             isUpdatingSlider = true;
-            timeSlider.value = value;
+            if (timeSlider != null)
+                timeSlider.value = value;
             isUpdatingSlider = false;
         }
     }
@@ -81,13 +85,18 @@ public class VideoPlayerUIController : MonoBehaviour
         // 如果视频正在播放，同步更新两个滑块的值
         if (playing && !sliderdown && !slider2down)
         {
-            float normalizedTime = (float)(videoPlayer.time / videoPlayer.length);
-            timeSlider.value = normalizedTime;
-            timeSlider2.value = normalizedTime;
+            if (videoPlayer != null && videoPlayer.length > 0)
+            {
+                float normalizedTime = (float)(videoPlayer.time / videoPlayer.length);
+                if (timeSlider != null)
+                    timeSlider.value = normalizedTime;
+                if (timeSlider2 != null)
+                    timeSlider2.value = normalizedTime;
+            }
         }
 
         // 处理第一个滑块
-        if (sliderdown)
+        if (sliderdown && timeSlider != null)
         {
             if (timer < 0.5f)
             {
@@ -100,7 +109,7 @@ public class VideoPlayerUIController : MonoBehaviour
             }
         }
         // 处理第二个滑块
-        else if (slider2down)
+        else if (slider2down && timeSlider2 != null)
         {
             if (timer < 0.5f)
             {
@@ -259,6 +268,8 @@ public class VideoPlayerUIController : MonoBehaviour
     // 第二个滑块的相关方法
     public void Slider2Down()
     {
+        if (timeSlider2 == null) return;
+        
         GetComponent<UITransform>().enabled = false;
         wasPlaying = videoPlayer.isPlaying;
         videoPlayer.Pause();
@@ -270,6 +281,8 @@ public class VideoPlayerUIController : MonoBehaviour
 
     public void Slider2Up()
     {
+        if (timeSlider2 == null) return;
+        
         videoPlayer.frame = (long)(timeSlider2.value * videoPlayer.frameCount);
         GetComponent<UITransform>().enabled = true;
         if (wasPlaying)

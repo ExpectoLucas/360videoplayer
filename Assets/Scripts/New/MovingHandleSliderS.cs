@@ -78,9 +78,9 @@ public class MovingHandleSliderS : MonoBehaviour
         float containerW = container.rect.width;
         float containerH = container.rect.height;
 
-        // 计算 handle 宽度 = containerW × (FOV / 360)
-        float fov = vrCamera.fieldOfView;
-        float handleW = containerW * (fov / 360f);
+        // 计算 handle 宽度 = containerW × (水平FOV / 360)
+        float horizontalFov = vrCamera != null ? vrCamera.fieldOfView * vrCamera.aspect : 90f;
+        float handleW = containerW * (horizontalFov / 360f);
 
         // 设置所有handle的基础属性
         handleRect.anchorMin = new Vector2(0.5f, 0f);

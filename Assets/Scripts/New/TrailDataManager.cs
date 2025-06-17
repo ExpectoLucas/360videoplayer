@@ -24,12 +24,18 @@ public class TrailData
     public string videoName;
     public DateTime recordTime;
     public string angleType;  // "Horizontal" or "Vertical"
+    public double videoDuration;  // 视频总时长（秒）
+    public string userName;  // 用户名
+    public float fov;  // 对应方向的视场角（水平或垂直）
 
-    public TrailData(string videoName, string angleType)
+    public TrailData(string videoName, string angleType, double duration, string userName, float fov)
     {
         this.videoName = videoName;
         this.recordTime = DateTime.Now;
         this.angleType = angleType;
+        this.videoDuration = duration;
+        this.userName = userName;
+        this.fov = fov;
     }
 }
 
@@ -55,6 +61,7 @@ public class TrailDataManager : MonoBehaviour
     private VideoPlayer videoPlayer;
     private string videoFileName;
     private string userName;
+    private Camera vrCamera;  // VR摄像机引用
 
     void Awake()
     {
@@ -69,6 +76,13 @@ public class TrailDataManager : MonoBehaviour
         // 显示数据保存路径
         string savePath = Path.Combine(Application.persistentDataPath, "TrailData");
         Debug.Log($"Trail data will be saved to: {savePath}");
+
+        // 获取VR摄像机
+        vrCamera = Camera.main;
+        if (vrCamera == null)
+        {
+            Debug.LogWarning("Could not find main camera, FOV will be set to default value");
+        }
     }
 
     public void Initialize(VideoPlayer videoPlayer)
@@ -106,12 +120,28 @@ public class TrailDataManager : MonoBehaviour
             Debug.LogWarning("Could not find VideoPlayerUIController, using default values");
         }
 
-        // 初始化两个数据集合
-        horizontalTrailData = new TrailData(videoFileName, "Horizontal");
-        verticalTrailData = new TrailData(videoFileName, "Vertical");
+        // 等待视频准备完成后再初始化数据集合
+        videoPlayer.prepareCompleted += OnVideoPrepared;
+        videoPlayer.Prepare();
+    }
+
+    private void OnVideoPrepared(VideoPlayer vp)
+    {
+        // 获取视频时长
+        double duration = vp.length;
+        Debug.Log($"Video duration: {duration} seconds");
+
+        // 获取水平和垂直FOV
+        float horizontalFov = vrCamera != null ? vrCamera.fieldOfView * vrCamera.aspect : 90f;  // 水平FOV = 垂直FOV * 宽高比
+        float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // 垂直FOV
+        Debug.Log($"Device FOV - Horizontal: {horizontalFov} degrees, Vertical: {verticalFov} degrees");
+
+        // 初始化两个数据集合，分别使用对应的FOV
+        horizontalTrailData = new TrailData(videoFileName, "Horizontal", duration, userName, horizontalFov);
+        verticalTrailData = new TrailData(videoFileName, "Vertical", duration, userName, verticalFov);
 
         // 订阅视频结束事件
-        videoPlayer.loopPointReached += OnVideoEnd;
+        vp.loopPointReached += OnVideoEnd;
     }
 
     public void AddTrailPoint(float time, float angle, bool isHorizontal)

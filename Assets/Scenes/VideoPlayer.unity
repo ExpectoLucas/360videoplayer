@@ -1540,6 +1540,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8512254016278534847, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8512254016278534847, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -3527,7 +3532,7 @@ MonoBehaviour:
   videoPlayer: {fileID: 1824035891}
   fixedHandleWidth: 5
   trailPrefab: {fileID: 603205537}
-  recordInterval: 1
+  recordInterval: 0.1
 --- !u!1 &1811993408
 GameObject:
   m_ObjectHideFlags: 0

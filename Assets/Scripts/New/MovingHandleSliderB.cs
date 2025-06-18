@@ -53,6 +53,12 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             TrailDataManager.Instance.Initialize(videoPlayer);
         }
+        
+        // 设置热力图容器的垂直容器引用
+        if (HeatmapManager.Instance != null)
+        {
+            HeatmapManager.Instance.verticalContainer = container;
+        }
     }
 
     void LateUpdate()

@@ -21,6 +21,12 @@ public class VideoPlayerUIController : MonoBehaviour
     public Sprite pauseImage;
     public Button playPauseButton;
 
+    [Header("热力图设置")]
+    [Tooltip("水平滑块容器（用于显示水平热力图）")]
+    public RectTransform horizontalHeatmapContainer;
+    [Tooltip("垂直滑块容器（用于显示垂直热力图）")]
+    public RectTransform verticalHeatmapContainer;
+
     private float timer = 0;
     private float skippingTime = 10;
     float rotationSpeed = 2f;
@@ -177,6 +183,30 @@ public class VideoPlayerUIController : MonoBehaviour
     {
         player.time = videoStartTime;
         player.Play();
+        
+        // 加载并显示热力图
+        LoadHeatmap();
+    }
+    
+    private void LoadHeatmap()
+    {
+        // 获取视频文件名
+        string videoName = "unknown_video";
+        if (!string.IsNullOrEmpty(videoURL) && videoURL != "null")
+        {
+            videoName = System.IO.Path.GetFileNameWithoutExtension(videoURL);
+        }
+        
+        // 设置热力图容器的引用
+        if (HeatmapManager.Instance != null)
+        {
+            HeatmapManager.Instance.horizontalContainer = horizontalHeatmapContainer;
+            HeatmapManager.Instance.verticalContainer = verticalHeatmapContainer;
+            
+            // 加载并显示热力图
+            HeatmapManager.Instance.LoadAndDisplayHeatmap(videoName, userName);
+            Debug.Log($"Loading heatmap for video: {videoName}, user: {userName}");
+        }
     }
 
     // Timing function to determine whether the user is dragging the timeline or clicking 

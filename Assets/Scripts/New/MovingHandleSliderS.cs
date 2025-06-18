@@ -61,6 +61,12 @@ public class MovingHandleSliderS : MonoBehaviour
         {
             TrailDataManager.Instance.Initialize(videoPlayer);
         }
+        
+        // 设置热力图容器的水平容器引用
+        if (HeatmapManager.Instance != null)
+        {
+            HeatmapManager.Instance.horizontalContainer = container;
+        }
     }
 
     private void CreateBoundaryHandles()

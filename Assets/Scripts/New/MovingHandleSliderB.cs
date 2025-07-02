@@ -19,8 +19,8 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
     public float fixedHandleWidth = 10f;
 
     [Header("轨迹历史设置")]
-    [Tooltip("用于记录轨迹的预制体，需要是一个 UI Image Prefab")]
-    public GameObject trailPrefab;
+    // [Tooltip("用于记录轨迹的预制体，需要是一个 UI Image Prefab")]
+    // public GameObject trailPrefab;
     [Tooltip("记录轨迹的时间间隔（秒），低于此间隔不再重复记录")]
     public float recordInterval = 0.1f;
 
@@ -30,9 +30,9 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
     void Start()
     {
-        if (slider == null || headTransform == null || container == null || trailPrefab == null)
+        if (slider == null || headTransform == null || container == null)
         {
-            Debug.LogError("请在 Inspector 中设置 slider、headTransform、container 和 trailPrefab！");
+            Debug.LogError("请在 Inspector 中设置 slider、headTransform 和 container！");
             enabled = false;
             return;
         }
@@ -71,7 +71,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         float w = container.rect.width;
         float h = container.rect.height;
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
-        float handleH = h * (verticalFov / 180f);
+        float handleH = h * (verticalFov / 180f) * 1.5f;
 
         handleRect.sizeDelta = new Vector2(fixedHandleWidth, handleH);
 
@@ -99,30 +99,17 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
                 // 记录轨迹点
                 TrailDataManager.Instance.AddTrailPoint(
                     (float)videoPlayer.time,
-                    pitch,
+                    -pitch,
                     false  // isHorizontal = false for B slider
                 );
 
-                CreateTrailSegment(x, y, handleH * 0.5f);
+                // 创建轨迹段（已注释，保留以备后用）
+                // CreateTrailSegment(x, y, handleH * 0.5f);
 
                 // **关键：生成完轨迹后，把 handle 放到最后**
                 handleRect.transform.SetAsLastSibling();
             }
         }
-    }
-
-    private void CreateTrailSegment(float x, float y, float height)
-    {
-        GameObject go = Instantiate(trailPrefab, container);
-        RectTransform rt = go.GetComponent<RectTransform>();
-
-        rt.anchorMin = handleRect.anchorMin;
-        rt.anchorMax = handleRect.anchorMax;
-        rt.pivot = handleRect.pivot;
-        rt.sizeDelta = new Vector2(fixedHandleWidth * 0.5f, height);
-        rt.anchoredPosition = new Vector2(x, y);
-
-
     }
 
     // 当用户在 Slider 上按下（开始拖拽）时调用
@@ -138,4 +125,19 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         isDragging = false;
         recordTimer = 0f; // 结束拖拽后也清零，保证间隔从 0 开始
     }
+
+    // 创建轨迹段的方法（已注释，保留以备后用）
+    /*
+    private void CreateTrailSegment(float x, float y, float height)
+    {
+        GameObject go = Instantiate(trailPrefab, container);
+        RectTransform rt = go.GetComponent<RectTransform>();
+
+        rt.anchorMin = handleRect.anchorMin;
+        rt.anchorMax = handleRect.anchorMax;
+        rt.pivot = handleRect.pivot;
+        rt.sizeDelta = new Vector2(fixedHandleWidth * 0.5f, height);
+        rt.anchoredPosition = new Vector2(x, y);
+    }
+    */
 }

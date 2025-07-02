@@ -18,8 +18,8 @@ public class MovingHandleSliderS : MonoBehaviour
     public float fixedHandleSize = 20f;
 
     [Header("轨迹历史设置")]
-    [Tooltip("UI Image Prefab，用于记录轨迹，每次生成一个条状片段")]
-    public GameObject trailPrefab;
+    // [Tooltip("UI Image Prefab，用于记录轨迹，每次生成一个条状片段")]
+    // public GameObject trailPrefab;
     [Tooltip("记录轨迹的时间间隔（秒），小于此间隔不再重复记录）")]
     public float recordInterval = 0.1f;
 
@@ -30,9 +30,9 @@ public class MovingHandleSliderS : MonoBehaviour
 
     void Start()
     {
-        if (slider == null || headTransform == null || container == null || trailPrefab == null)
+        if (slider == null || headTransform == null || container == null)
         {
-            Debug.LogError("请在 Inspector 中设置 slider、headTransform、container 和 trailPrefab！");
+            Debug.LogError("请在 Inspector 中设置 slider、headTransform 和 container！");
             enabled = false;
             return;
         }
@@ -52,9 +52,7 @@ public class MovingHandleSliderS : MonoBehaviour
             vrCamera = Camera.main;
 
         // 记录初始头部 yaw 作为零点
-        float y = headTransform.rotation.eulerAngles.y;
-        if (y > 180f) y -= 360f;
-        initialYaw = y;
+        initialYaw = -90f;
 
         // 初始化 TrailDataManager
         if (videoPlayer != null)
@@ -85,8 +83,10 @@ public class MovingHandleSliderS : MonoBehaviour
         float containerH = container.rect.height;
 
         // 计算 handle 宽度 = containerW × (水平FOV / 360)
-        float horizontalFov = vrCamera != null ? vrCamera.fieldOfView * vrCamera.aspect : 90f;
-        float handleW = containerW * (horizontalFov / 360f);
+        float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
+        float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
+        float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
+        float handleW = containerW * (horizontalFov / 360f) * 1.5f;
 
         // 设置所有handle的基础属性
         handleRect.anchorMin = new Vector2(0.5f, 0f);
@@ -177,7 +177,8 @@ public class MovingHandleSliderS : MonoBehaviour
                     true  // isHorizontal = true for S slider
                 );
                 
-                // 根据handle的状态创建轨迹
+                // 根据handle的状态创建轨迹（已注释，保留以备后用）
+                /*
                 if (horizontalX - handleHalfWidth < leftEdge)
                 {
                     // 跨越左边界时，创建两个轨迹
@@ -195,7 +196,8 @@ public class MovingHandleSliderS : MonoBehaviour
                     // 正常情况，创建一个轨迹
                     CreateTrailSegment(horizontalX, verticalY, handleW * 0.5f);
                 }
-
+                */
+                
                 // 生成后把 handle 提到最上层
                 handleRect.transform.SetAsLastSibling();
                 oppositeHandleRect.transform.SetAsLastSibling();
@@ -203,6 +205,8 @@ public class MovingHandleSliderS : MonoBehaviour
         }
     }
 
+    // 创建轨迹段的方法（已注释，保留以备后用）
+    /*
     private void CreateTrailSegment(float x, float y, float width)
     {
         // 实例化一个 prefab 到 container
@@ -220,4 +224,5 @@ public class MovingHandleSliderS : MonoBehaviour
         // 位置对齐到 handle 当时的位置
         rt.anchoredPosition = new Vector2(x, y);
     }
+    */
 }

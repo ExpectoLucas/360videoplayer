@@ -12,8 +12,8 @@ public class TrailPoint
 
     public TrailPoint(float time, float angle)
     {
-        this.time = time;
-        this.angle = angle;
+        this.time = Mathf.Round(time * 100f) / 100f;  // 保留小数点后两位
+        this.angle = Mathf.Round(angle * 100f) / 100f;  // 保留小数点后两位
     }
 }
 
@@ -33,9 +33,9 @@ public class TrailData
         this.videoName = videoName;
         this.recordTime = DateTime.Now;
         this.angleType = angleType;
-        this.videoDuration = duration;
+        this.videoDuration = Math.Round(duration * 100.0) / 100.0;  // 保留小数点后两位
         this.userName = userName;
-        this.fov = fov;
+        this.fov = Mathf.Round(fov * 100f) / 100f;  // 保留小数点后两位
     }
 }
 
@@ -132,8 +132,9 @@ public class TrailDataManager : MonoBehaviour
         Debug.Log($"Video duration: {duration} seconds");
 
         // 获取水平和垂直FOV
-        float horizontalFov = vrCamera != null ? vrCamera.fieldOfView * vrCamera.aspect : 90f;  // 水平FOV = 垂直FOV * 宽高比
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // 垂直FOV
+        float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
+        float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
         Debug.Log($"Device FOV - Horizontal: {horizontalFov} degrees, Vertical: {verticalFov} degrees");
 
         // 初始化两个数据集合，分别使用对应的FOV

@@ -78,7 +78,7 @@ public class HeatmapManager : MonoBehaviour
     
     private void InitializeGradient()
     {
-        // 使用Viridis颜色方案，与test.ipynb保持一致
+        // 使用Viridis颜色方案
         GradientColorKey[] colorKeys = new GradientColorKey[5];
         colorKeys[0] = new GradientColorKey(new Color(0.267004f, 0.004874f, 0.329415f), 0.0f);  // 深紫色
         colorKeys[1] = new GradientColorKey(new Color(0.127568f, 0.566949f, 0.550556f), 0.25f); // 青色
@@ -372,7 +372,11 @@ public class HeatmapManager : MonoBehaviour
         
         // 统计访问次数
         Dictionary<Vector2Int, int> gridVisits = new Dictionary<Vector2Int, int>();
-        int maxVisits = 0;
+
+        // 新增：每秒局部最大值（行或列）
+        Dictionary<int, int> axisMax = new Dictionary<int, int>();   // key = 行(y) 或 列(x)
+
+
         
         foreach (var point in data.points)
         {
@@ -401,22 +405,24 @@ public class HeatmapManager : MonoBehaviour
                 if (!gridVisits.ContainsKey(gridPos))
                     gridVisits[gridPos] = 0;
                 gridVisits[gridPos]++;
-                maxVisits = Mathf.Max(maxVisits, gridVisits[gridPos]);
+
+                int axisKey = isHorizontal ? gridPos.y : gridPos.x;
+                if (!axisMax.ContainsKey(axisKey) || gridVisits[gridPos] > axisMax[axisKey])
+                    axisMax[axisKey] = gridVisits[gridPos];
             }
         }
         
         // 设置像素颜色
         foreach (var kvp in gridVisits)
         {
-            if (kvp.Value > 0)
+            int axisKey = isHorizontal ? kvp.Key.y : kvp.Key.x;
+            if (axisMax.TryGetValue(axisKey, out int localMax) && localMax > 0)
             {
-                float intensity = (float)kvp.Value / maxVisits;
+                float intensity = (float)kvp.Value / localMax;   // 0-1 归一化
                 Color color = heatmapGradient.Evaluate(intensity);
                 int index = kvp.Key.y * width + kvp.Key.x;
                 if (index >= 0 && index < pixels.Length)
-                {
                     pixels[index] = color;
-                }
             }
         }
         

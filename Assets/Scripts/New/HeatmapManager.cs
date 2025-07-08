@@ -146,7 +146,7 @@ public class HeatmapManager : MonoBehaviour
     
     private void LoadHistoricalData(string videoName, string userName)
     {
-        string baseDirectory = Path.Combine(Application.persistentDataPath, "TrailData");
+        string baseDirectory = Path.Combine(Application.dataPath, "TrailData");
         if (!Directory.Exists(baseDirectory))
         {
             Debug.Log("No trail data directory found");
@@ -274,7 +274,7 @@ public class HeatmapManager : MonoBehaviour
     
     private void LoadPOIData(string videoName)
     {
-        string poiPath = Path.Combine(Application.persistentDataPath, "poi.json");
+        string poiPath = Path.Combine(Application.dataPath, "poi.json");
         if (!File.Exists(poiPath))
         {
             Debug.Log("poi.json file not found");

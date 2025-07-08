@@ -1,0 +1,29 @@
+{
+  "videoName": "",
+  "points": [
+    {
+      "time": 43,
+      "Hangle": -10,
+      "Vangle": 0,
+      "hint": "the numbers on the monkey’s body!"
+    },
+    {
+      "time": 43,
+      "Hangle": 150,
+      "Vangle": 0,
+      "hint": "the numbers on the monkey’s body!"
+    },
+    {
+      "time": 174,
+      "Hangle": 30.0,
+      "Vangle": 20.0,
+      "hint": "There's a monkey leaving!"
+    },
+    {
+      "time": 37,
+      "Hangle": -100.0,
+      "Vangle": 0,
+      "hint": "Pay close attention to the movement of the monkey on the tire throughout the whole video."
+    }
+  ]
+}

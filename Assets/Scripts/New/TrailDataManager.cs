@@ -73,8 +73,8 @@ public class TrailDataManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // 显示数据保存路径
-        string savePath = Path.Combine(Application.persistentDataPath, "TrailData");
+        // 显示数据保存路径 - 修改为NewData文件夹
+        string savePath = Path.Combine(Application.dataPath, "TrailData");
         Debug.Log($"Trail data will be saved to: {savePath}");
 
         // 获取VR摄像机
@@ -182,8 +182,8 @@ public class TrailDataManager : MonoBehaviour
             return;
         }
 
-        // 创建基础目录
-        string baseDirectory = Path.Combine(Application.persistentDataPath, "TrailData");
+        // 修改基础目录为NewData文件夹
+        string baseDirectory = Path.Combine(Application.dataPath, "TrailData");
         if (!Directory.Exists(baseDirectory))
         {
             Directory.CreateDirectory(baseDirectory);
@@ -228,4 +228,4 @@ public class TrailDataManager : MonoBehaviour
             verticalTrailData = null;
         }
     }
-} 
+}

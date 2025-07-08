@@ -735,8 +735,26 @@ MonoBehaviour:
   timeGridDensity: 1
   angleGridDensity: 1
   textureResolution: 256
-  horizontalContainer: {fileID: 0}
-  verticalContainer: {fileID: 0}
+  horizontalContainer: {fileID: 876943276}
+  verticalContainer: {fileID: 1834108048}
+  poiDotSize: 5
+  poiColor: {r: 1, g: 0, b: 0, a: 1}
+  hintTextSize: 12
+--- !u!114 &862103607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862103600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48f1a2c6961786f47ba2462532930fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftController: {fileID: 1718455148}
+  rightController: {fileID: 1398819416}
+  raycastDistance: 10
 --- !u!1001 &876943275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -967,7 +985,7 @@ PrefabInstance:
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: userName
-      value: Lucas
+      value: Control_1
       objectReference: {fileID: 0}
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
@@ -1018,7 +1036,7 @@ PrefabInstance:
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: videoStartTime
-      value: 33
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
@@ -2225,6 +2243,12 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!1 &1247484784 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3233217277881167458, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+    type: 3}
+  m_PrefabInstance: {fileID: 876943275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1260561172
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,6 +3072,12 @@ MonoBehaviour:
   m_MoveObjectIn: 14
   m_MoveObjectOut: 15
   m_PoseProvider: {fileID: 0}
+--- !u!1 &1568359329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5258424693765923105, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+    type: 3}
+  m_PrefabInstance: {fileID: 876943275}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1577418785
 GameObject:
   m_ObjectHideFlags: 0
@@ -4014,7 +4044,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddaef037d6995c34daad86781d3eaeb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUI: {fileID: 862103600}
+  uiObjects:
+  - {fileID: 1247484784}
+  - {fileID: 603205537}
+  - {fileID: 1568359329}
+  dynamicUINames:
+  - POI_43_V
+  - POI_174_V
+  - POI_37_V
+  - VerticalHeatmap
   toggleButton: 6
   activationThreshold: 0.1
   debounceTime: 0.2
@@ -4024,7 +4062,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 876943275}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1247484784}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
@@ -4042,7 +4080,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 876943275}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1568359329}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}

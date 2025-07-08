@@ -16,6 +16,30 @@ public class HeatmapData
     public float fov;
 }
 
+[Serializable]
+public class POIPoint
+{
+    public float time;
+    public float Hangle;  // 水平角度
+    public float Vangle;  // 垂直角度
+    public string hint;   // 提示信息
+
+    public POIPoint(float time, float hangle, float vangle, string hint)
+    {
+        this.time = time;
+        this.Hangle = hangle;
+        this.Vangle = vangle;
+        this.hint = hint;
+    }
+}
+
+[Serializable]
+public class POIData
+{
+    public List<POIPoint> points = new List<POIPoint>();
+    public string videoName;
+}
+
 public class HeatmapManager : MonoBehaviour
 {
     [Header("热力图设置")]
@@ -40,12 +64,30 @@ public class HeatmapManager : MonoBehaviour
     [Tooltip("垂直滑块容器（用于显示垂直热力图）")]
     public RectTransform verticalContainer;
     
+    [Header("POI设置")]
+    [Tooltip("POI红点的大小")]
+    [Range(2f, 20f)]
+    public float poiDotSize = 8f;
+    [Tooltip("POI红点的颜色")]
+    public Color poiColor = Color.red;
+    [Tooltip("POI提示文本的字体大小")]
+    [Range(8, 24)]
+    public int hintTextSize = 12;
+    
     private Dictionary<string, HeatmapData> horizontalData = new Dictionary<string, HeatmapData>();
     private Dictionary<string, HeatmapData> verticalData = new Dictionary<string, HeatmapData>();
+    private Dictionary<string, POIData> poiData = new Dictionary<string, POIData>();
+    
     private GameObject horizontalHeatmapObject;
     private GameObject verticalHeatmapObject;
     private Image horizontalHeatmapImage;
     private Image verticalHeatmapImage;
+    
+    // POI相关对象
+    private List<GameObject> horizontalPOIObjects = new List<GameObject>();
+    private List<GameObject> verticalPOIObjects = new List<GameObject>();
+    private GameObject hintPanel;
+    private Text hintText;
     
     private static HeatmapManager instance;
     public static HeatmapManager Instance
@@ -97,7 +139,9 @@ public class HeatmapManager : MonoBehaviour
     {
         ClearExistingHeatmaps();
         LoadHistoricalData(videoName, userName);
+        LoadPOIData(videoName);
         GenerateHeatmaps();
+        GeneratePOIMarkers();
     }
     
     private void LoadHistoricalData(string videoName, string userName)
@@ -225,6 +269,55 @@ public class HeatmapManager : MonoBehaviour
         else
         {
             Debug.Log("Vertical.json not found in session directory");
+        }
+    }
+    
+    private void LoadPOIData(string videoName)
+    {
+        string poiPath = Path.Combine(Application.persistentDataPath, "poi.json");
+        if (!File.Exists(poiPath))
+        {
+            Debug.Log("poi.json file not found");
+            return;
+        }
+        
+        try
+        {
+            string json = File.ReadAllText(poiPath);
+            POIData data = JsonUtility.FromJson<POIData>(json);
+            
+            if (data != null && data.points != null)
+            {
+                // 过滤出当前视频的POI数据
+                List<POIPoint> filteredPoints = new List<POIPoint>();
+                foreach (var point in data.points)
+                {
+                    // 如果videoName为空或者匹配当前视频，则添加该POI点
+                    if (string.IsNullOrEmpty(data.videoName) || data.videoName == videoName)
+                    {
+                        filteredPoints.Add(point);
+                    }
+                }
+                
+                if (filteredPoints.Count > 0)
+                {
+                    POIData filteredData = new POIData
+                    {
+                        points = filteredPoints,
+                        videoName = videoName
+                    };
+                    poiData[videoName] = filteredData;
+                    Debug.Log($"Loaded {filteredPoints.Count} POI points for video: {videoName}");
+                }
+                else
+                {
+                    Debug.Log($"No POI points found for video: {videoName}");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error loading POI data: {e.Message}");
         }
     }
     
@@ -555,13 +648,300 @@ public class HeatmapManager : MonoBehaviour
             verticalHeatmapImage = null;
         }
         
+        // 清除POI标记
+        ClearPOIMarkers();
+        
         // 清除数据
         horizontalData.Clear();
         verticalData.Clear();
+        poiData.Clear();
     }
     
     public void ClearHeatmaps()
     {
         ClearExistingHeatmaps();
+        
+        // 清除提示面板
+        if (hintPanel != null)
+        {
+            DestroyImmediate(hintPanel);
+            hintPanel = null;
+            hintText = null;
+        }
     }
-} 
+    
+    private void GeneratePOIMarkers()
+    {
+        Debug.Log("Generating POI markers...");
+        
+        // 清除之前的POI标记
+        ClearPOIMarkers();
+        
+        // 创建提示面板（如果不存在）
+        CreateHintPanel();
+        
+        foreach (var kvp in poiData)
+        {
+            string videoName = kvp.Key;
+            POIData data = kvp.Value;
+            
+            Debug.Log($"Generating POI markers for video: {videoName}, POI count: {data.points.Count}");
+            
+            foreach (var poi in data.points)
+            {
+                // 在水平容器中创建POI标记
+                if (horizontalContainer != null)
+                {
+                    CreatePOIMarker(poi, horizontalContainer, true);
+                }
+                
+                // 在垂直容器中创建POI标记
+                if (verticalContainer != null)
+                {
+                    CreatePOIMarker(poi, verticalContainer, false);
+                }
+            }
+        }
+        
+        Debug.Log($"Generated POI markers: {horizontalPOIObjects.Count} horizontal, {verticalPOIObjects.Count} vertical");
+    }
+    
+    private void CreatePOIMarker(POIPoint poi, RectTransform container, bool isHorizontal)
+    {
+        // 创建POI标记游戏对象
+        GameObject poiObject = new GameObject($"POI_{poi.time}_{(isHorizontal ? "H" : "V")}");
+        poiObject.transform.SetParent(container, false);
+        
+        // 添加RectTransform组件
+        RectTransform rectTransform = poiObject.AddComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(poiDotSize, poiDotSize);
+        
+        // 添加Image组件显示红点
+        Image dotImage = poiObject.AddComponent<Image>();
+        dotImage.color = poiColor;
+        
+        // 创建圆形纹理
+        Texture2D circleTexture = CreateCircleTexture((int)poiDotSize);
+        Sprite circleSprite = Sprite.Create(circleTexture, new Rect(0, 0, circleTexture.width, circleTexture.height), Vector2.one * 0.5f);
+        dotImage.sprite = circleSprite;
+        
+        // 计算POI在容器中的位置
+        Vector2 normalizedPosition = CalculatePOIPosition(poi, isHorizontal);
+        
+        // 设置锚点和位置
+        rectTransform.anchorMin = normalizedPosition;
+        rectTransform.anchorMax = normalizedPosition;
+        rectTransform.anchoredPosition = Vector2.zero;
+        
+        // 添加悬浮检测组件
+        POIHoverDetector hoverDetector = poiObject.AddComponent<POIHoverDetector>();
+        hoverDetector.Initialize(poi.hint, this);
+        
+        // 确保POI在最上层显示
+        poiObject.transform.SetAsLastSibling();
+        
+        // 添加到对应列表
+        if (isHorizontal)
+        {
+            horizontalPOIObjects.Add(poiObject);
+        }
+        else
+        {
+            verticalPOIObjects.Add(poiObject);
+        }
+        
+        Debug.Log($"Created POI marker at position {normalizedPosition} for {(isHorizontal ? "horizontal" : "vertical")} container");
+    }
+    
+    private Vector2 CalculatePOIPosition(POIPoint poi, bool isHorizontal)
+    {
+        Vector2 normalizedPosition;
+        
+        if (isHorizontal)
+        {
+            // 水平热力图：X轴角度(-180到180)，Y轴时间
+            // 获取视频总时长（从已加载的热力图数据中）
+            double videoDuration = GetVideoDuration();
+            
+            float normalizedX = (poi.Hangle + 180f) / 360f; // 将-180到180映射到0到1
+            float normalizedY = (float)(poi.time / videoDuration); // 将时间映射到0到1
+            
+            normalizedPosition = new Vector2(
+                Mathf.Clamp01(normalizedX),
+                Mathf.Clamp01(normalizedY)
+            );
+        }
+        else
+        {
+            // 垂直热力图：X轴时间，Y轴角度(-90到90)
+            double videoDuration = GetVideoDuration();
+            
+            float normalizedX = (float)(poi.time / videoDuration); // 将时间映射到0到1
+            float normalizedY = (poi.Vangle + 90f) / 180f; // 将-90到90映射到0到1
+            
+            normalizedPosition = new Vector2(
+                Mathf.Clamp01(normalizedX),
+                Mathf.Clamp01(normalizedY)
+            );
+        }
+        
+        return normalizedPosition;
+    }
+    
+    private double GetVideoDuration()
+    {
+        // 从已加载的热力图数据中获取视频时长
+        foreach (var kvp in horizontalData)
+        {
+            return kvp.Value.videoDuration;
+        }
+        foreach (var kvp in verticalData)
+        {
+            return kvp.Value.videoDuration;
+        }
+        return 60.0; // 默认值
+    }
+    
+    private Texture2D CreateCircleTexture(int size)
+    {
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        texture.filterMode = FilterMode.Bilinear;
+        
+        Color[] pixels = new Color[size * size];
+        Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+        float radius = size * 0.5f;
+        
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Vector2 pos = new Vector2(x, y);
+                float distance = Vector2.Distance(pos, center);
+                
+                if (distance <= radius)
+                {
+                    // 在圆内，设置为不透明
+                    pixels[y * size + x] = Color.white;
+                }
+                else
+                {
+                    // 在圆外，设置为透明
+                    pixels[y * size + x] = Color.clear;
+                }
+            }
+        }
+        
+        texture.SetPixels(pixels);
+        texture.Apply();
+        return texture;
+    }
+    
+    private void CreateHintPanel()
+    {
+        if (hintPanel != null) return;
+        
+        // 创建提示面板
+        hintPanel = new GameObject("HintPanel");
+        RectTransform hintRect = hintPanel.AddComponent<RectTransform>();
+        
+        // 将提示面板添加到Canvas中（寻找最顶层的Canvas）
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas != null)
+        {
+            hintPanel.transform.SetParent(canvas.transform, false);
+        }
+        else
+        {
+            Debug.LogWarning("No Canvas found for hint panel");
+            return;
+        }
+        
+        // 设置面板属性
+        hintRect.sizeDelta = new Vector2(200, 50);
+        hintRect.anchorMin = Vector2.zero;
+        hintRect.anchorMax = Vector2.zero;
+        
+        // 添加背景图片
+        Image backgroundImage = hintPanel.AddComponent<Image>();
+        backgroundImage.color = new Color(0, 0, 0, 0.8f); // 半透明黑色背景
+        
+        // 创建文本对象
+        GameObject textObject = new GameObject("HintText");
+        textObject.transform.SetParent(hintPanel.transform, false);
+        
+        RectTransform textRect = textObject.AddComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(5, 5);
+        textRect.offsetMax = new Vector2(-5, -5);
+        
+        hintText = textObject.AddComponent<Text>();
+        hintText.text = "";
+        hintText.fontSize = hintTextSize;
+        hintText.color = Color.white;
+        hintText.alignment = TextAnchor.MiddleCenter;
+        
+        // 尝试找到字体
+        Font font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        if (font != null)
+        {
+            hintText.font = font;
+        }
+        
+        // 初始状态设置为不可见
+        hintPanel.SetActive(false);
+    }
+    
+    private void ClearPOIMarkers()
+    {
+        // 清除水平POI标记
+        foreach (var obj in horizontalPOIObjects)
+        {
+            if (obj != null)
+            {
+                DestroyImmediate(obj);
+            }
+        }
+        horizontalPOIObjects.Clear();
+        
+        // 清除垂直POI标记
+        foreach (var obj in verticalPOIObjects)
+        {
+            if (obj != null)
+            {
+                DestroyImmediate(obj);
+            }
+        }
+        verticalPOIObjects.Clear();
+    }
+    
+    public void ShowHint(string hint, Vector3 worldPosition)
+    {
+        if (hintPanel == null || hintText == null) return;
+        
+        hintText.text = hint;
+        hintPanel.SetActive(true);
+        
+        // 将世界坐标转换为屏幕坐标
+        Canvas canvas = hintPanel.GetComponentInParent<Canvas>();
+        if (canvas != null)
+        {
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            Camera cam = canvas.worldCamera ?? Camera.main;
+            
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, worldPosition);
+            Vector2 localPoint;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, cam, out localPoint);
+            
+            hintPanel.GetComponent<RectTransform>().localPosition = localPoint + new Vector2(10, 10); // 稍微偏移一点
+        }
+    }
+    
+    public void HideHint()
+    {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
+    }
+}

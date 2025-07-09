@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using System.IO;
+using System.Linq;
+using System;
 
 public class VideoPlayerUIController : MonoBehaviour
 {
@@ -43,7 +46,7 @@ public class VideoPlayerUIController : MonoBehaviour
 
     //video for different experiments
     //private string videoURL = "C:/Users/chens/Desktop/Thesis/video/selected/Costa_Rica.mp4";//1
-    public string videoURL = "null";
+    public string videoURL = "";
     
     public float videoStartTime = 0.0f;
     
@@ -52,6 +55,7 @@ public class VideoPlayerUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        videoURL = Path.Combine(Application.dataPath, "20180717_monkey cinema_focal manny_injected_360.mp4");
         // 添加滑块值改变事件监听
         if (timeSlider != null)
             timeSlider.onValueChanged.AddListener(OnSliderValueChanged);

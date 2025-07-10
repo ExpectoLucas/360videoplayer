@@ -5,13 +5,13 @@
       "time": 43,
       "Hangle": -10,
       "Vangle": 0,
-      "hint": "the numbers on the monkey’s body!"
+      "hint": "the numbers on the monkey body!"
     },
     {
       "time": 43,
       "Hangle": 150,
       "Vangle": 0,
-      "hint": "the numbers on the monkey’s body!"
+      "hint": "the numbers on the monkey body!"
     },
     {
       "time": 174,
@@ -23,7 +23,7 @@
       "time": 37,
       "Hangle": -100.0,
       "Vangle": 0,
-      "hint": "Pay close attention to the movement of the monkey on the tire throughout the whole video."
+      "hint": "Pay attention to this monkey throughout the video."
     }
   ]
 }

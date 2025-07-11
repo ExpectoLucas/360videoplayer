@@ -6,11 +6,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(XRController))]
 public class XRControllerToggleUI : MonoBehaviour
 {
-    [Tooltip("要隐藏/显示的多个 UI 对象")]
-    [SerializeField] private GameObject[] uiObjects;
-
-    [Tooltip("运行时动态查找的UI对象名称列表")]
-    [SerializeField] private string[] dynamicUINames = { "POI_43_V", "POI_174_V", "POI_37_V", "VerticalHeatmap"};
+    [Tooltip("要隐藏/显示的 UI 根节点")]
+    [SerializeField] private GameObject playerUI;
 
     [Tooltip("监听哪个按钮来切换 UI，比如 Grip, Trigger, PrimaryButton(A), SecondaryButton(B) 等")]
     [SerializeField] private InputHelpers.Button toggleButton = InputHelpers.Button.Grip;
@@ -23,67 +20,37 @@ public class XRControllerToggleUI : MonoBehaviour
 
     private XRController xrController;
     private bool previousState = false;
-    private CanvasGroup[] uiCanvasGroups;
-    private System.Collections.Generic.List<CanvasGroup> dynamicUICanvasGroups;
-    private System.Collections.Generic.List<GameObject> dynamicUIObjects;
+    private CanvasGroup uiCanvasGroup;
     private float lastToggleTime = 0f;
 
     void Awake()
     {
         xrController = GetComponent<XRController>();
-        
-        // 处理预设置的UI对象
-        if (uiObjects != null && uiObjects.Length > 0)
+        if (playerUI == null)
         {
-            InitializeStaticUIObjects();
+            Debug.LogWarning("XRControllerToggleUI: 没有指定 playerUI，切换功能不会生效。");
+            return;
         }
 
-        // 初始化动态UI列表
-        if (dynamicUINames != null && dynamicUINames.Length > 0)
+        // 尝试获取CanvasGroup
+        uiCanvasGroup = playerUI.GetComponent<CanvasGroup>();
+        if (uiCanvasGroup == null)
         {
-            dynamicUIObjects = new System.Collections.Generic.List<GameObject>();
-            dynamicUICanvasGroups = new System.Collections.Generic.List<CanvasGroup>();
+            uiCanvasGroup = playerUI.GetComponentInChildren<CanvasGroup>();
         }
-    }
 
-    private void InitializeStaticUIObjects()
-    {
-        // 初始化CanvasGroup数组
-        uiCanvasGroups = new CanvasGroup[uiObjects.Length];
-        
-        for (int i = 0; i < uiObjects.Length; i++)
+        // 如果没有CanvasGroup，自动添加一个
+        if (uiCanvasGroup == null)
         {
-            if (uiObjects[i] == null)
-            {
-                Debug.LogWarning($"XRControllerToggleUI: UI对象索引{i}为空，跳过该对象。");
-                continue;
-            }
-
-            // 尝试获取CanvasGroup
-            CanvasGroup canvasGroup = uiObjects[i].GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
-            {
-                canvasGroup = uiObjects[i].GetComponentInChildren<CanvasGroup>();
-            }
-
-            // 如果没有CanvasGroup，自动添加一个
-            if (canvasGroup == null)
-            {
-                canvasGroup = uiObjects[i].AddComponent<CanvasGroup>();
-                Debug.Log($"XRControllerToggleUI: 自动添加了CanvasGroup组件到 {uiObjects[i].name}");
-            }
-            
-            uiCanvasGroups[i] = canvasGroup;
+            uiCanvasGroup = playerUI.AddComponent<CanvasGroup>();
+            Debug.Log("XRControllerToggleUI: 自动添加了CanvasGroup组件到 " + playerUI.name);
         }
     }
 
     void Update()
     {
-        if (xrController == null)
+        if (playerUI == null || xrController == null || uiCanvasGroup == null)
             return;
-
-        // 尝试查找动态UI对象
-        FindDynamicUIObjects();
 
         bool isPressed = false;
         InputHelpers.IsPressed(
@@ -102,132 +69,23 @@ public class XRControllerToggleUI : MonoBehaviour
         previousState = isPressed;
     }
 
-    private void FindDynamicUIObjects()
-    {
-        if (dynamicUINames == null || dynamicUINames.Length == 0)
-            return;
-
-        for (int nameIndex = 0; nameIndex < dynamicUINames.Length; nameIndex++)
-        {
-            string uiName = dynamicUINames[nameIndex];
-            if (string.IsNullOrEmpty(uiName))
-                continue;
-
-            // 查找所有同名的GameObject
-            GameObject[] allObjects = GameObject.FindObjectsOfType<GameObject>();
-            foreach (GameObject obj in allObjects)
-            {
-                if (obj.name == uiName && !dynamicUIObjects.Contains(obj))
-                {
-                    dynamicUIObjects.Add(obj);
-                    
-                    // 为动态找到的对象设置CanvasGroup
-                    CanvasGroup canvasGroup = obj.GetComponent<CanvasGroup>();
-                    if (canvasGroup == null)
-                    {
-                        canvasGroup = obj.GetComponentInChildren<CanvasGroup>();
-                    }
-                    if (canvasGroup == null)
-                    {
-                        canvasGroup = obj.AddComponent<CanvasGroup>();
-                        Debug.Log($"XRControllerToggleUI: 自动添加了CanvasGroup组件到动态UI {obj.name}");
-                    }
-                    
-                    dynamicUICanvasGroups.Add(canvasGroup);
-                    Debug.Log($"XRControllerToggleUI: 找到动态UI对象 {obj.name} (实例ID: {obj.GetInstanceID()})");
-                }
-            }
-        }
-    }
-
     private void ToggleUI()
     {
-        // 检查当前UI状态（优先检查静态UI，然后检查动态UI）
-        bool isVisible = GetCurrentUIVisibility();
+        bool isVisible = uiCanvasGroup.alpha > 0.5f;
         
-        // 切换静态UI对象的状态
-        if (uiCanvasGroups != null)
+        if (isVisible)
         {
-            for (int i = 0; i < uiCanvasGroups.Length; i++)
-            {
-                if (uiCanvasGroups[i] == null)
-                    continue;
-
-                SetUIVisibility(uiCanvasGroups[i], !isVisible);
-            }
-        }
-
-        // 切换动态UI对象的状态
-        if (dynamicUICanvasGroups != null)
-        {
-            for (int i = 0; i < dynamicUICanvasGroups.Count; i++)
-            {
-                if (dynamicUICanvasGroups[i] == null)
-                    continue;
-
-                SetUIVisibility(dynamicUICanvasGroups[i], !isVisible);
-            }
-        }
-    }
-
-    private bool GetCurrentUIVisibility()
-    {
-        // 先检查静态UI的状态
-        if (uiCanvasGroups != null)
-        {
-            for (int i = 0; i < uiCanvasGroups.Length; i++)
-            {
-                if (uiCanvasGroups[i] != null)
-                {
-                    return uiCanvasGroups[i].alpha > 0.5f;
-                }
-            }
-        }
-
-        // 如果没有静态UI，检查动态UI的状态
-        if (dynamicUICanvasGroups != null)
-        {
-            for (int i = 0; i < dynamicUICanvasGroups.Count; i++)
-            {
-                if (dynamicUICanvasGroups[i] != null)
-                {
-                    return dynamicUICanvasGroups[i].alpha > 0.5f;
-                }
-            }
-        }
-
-        return false; // 默认为隐藏状态
-    }
-
-    private void SetUIVisibility(CanvasGroup canvasGroup, bool visible)
-    {
-        if (visible)
-        {
-            // 显示UI
-            canvasGroup.alpha = 1f;
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
+            // 隐藏UI
+            uiCanvasGroup.alpha = 0f;
+            uiCanvasGroup.interactable = false;
+            uiCanvasGroup.blocksRaycasts = false;
         }
         else
         {
-            // 隐藏UI
-            canvasGroup.alpha = 0f;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
+            // 显示UI
+            uiCanvasGroup.alpha = 1f;
+            uiCanvasGroup.interactable = true;
+            uiCanvasGroup.blocksRaycasts = true;
         }
-    }
-
-    /// <summary>
-    /// 手动刷新动态UI列表，可在运行时调用
-    /// </summary>
-    public void RefreshDynamicUIList()
-    {
-        if (dynamicUIObjects != null)
-        {
-            dynamicUIObjects.Clear();
-            dynamicUICanvasGroups.Clear();
-        }
-        FindDynamicUIObjects();
-        Debug.Log($"XRControllerToggleUI: 手动刷新完成，当前管理 {dynamicUIObjects.Count} 个动态UI对象");
     }
 }

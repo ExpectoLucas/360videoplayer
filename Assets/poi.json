@@ -15,8 +15,8 @@
     },
     {
       "time": 174,
-      "Hangle": 30.0,
-      "Vangle": 20.0,
+      "Hangle": 20.0,
+      "Vangle": 30.0,
       "hint": "There's a monkey leaving!"
     },
     {
@@ -24,6 +24,12 @@
       "Hangle": -100.0,
       "Vangle": 0,
       "hint": "Pay attention to this monkey throughout the video."
+    },
+    {
+      "time": 92,
+      "Hangle": -140.0,
+      "Vangle": 0,
+      "hint": "Watch Out!"
     }
   ]
 }

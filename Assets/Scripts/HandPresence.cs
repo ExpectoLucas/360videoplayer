@@ -94,12 +94,17 @@ public class HandPresence : MonoBehaviour
                 rightHandController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 primary2DAxisValue);
                 rightThumbstickValue = primary2DAxisValue;
 
+                // 遥感旋转视角功能已禁用 - 注释掉以下代码以禁用遥感控制视角旋转
+                /*
                 if (primary2DAxisValue.x != 0)
                 {
                     //Debug.Log("primary touchpad: " + primary2DAxisValue);
                     RotateSphere(rightThumbstickValue);
                 }
+                */
 
+                // 遥感快进功能已禁用 - 注释掉以下代码以禁用遥感控制视频快进
+                /*
                 if (primary2DAxisValue.y != 0 && timer < 0.8f)
                 {
                     MoveTimeSliderWithFrames(rightThumbstickValue);
@@ -113,6 +118,7 @@ public class HandPresence : MonoBehaviour
                     //videoPlayer.Play();
                     //UIController.playing = true;
                 }
+                */
 
 
                 // Add a timer to make the timeline respond slower, in order for the video player to catch up and be mroe responsive
@@ -144,23 +150,33 @@ public class HandPresence : MonoBehaviour
 
     void RotateSphere(Vector2 value)
     {
+        // 遥感旋转视角功能已被禁用
+        // 原始代码已注释，如需重新启用请取消注释
+        /*
         float delta = value.x;
         this.videoSphere.transform.Rotate(Vector3.up * delta * 360 * 0.025f);
-
+        */
     }
 
     void MoveTimeSlider(Vector2 value)
     {
+        // 遥感时间控制功能已被禁用
+        // 原始代码已注释，如需重新启用请取消注释
+        /*
         float delta = value.y;
         videoPlayer.time += delta * 5;
-
+        */
     }
 
     void MoveTimeSliderWithFrames(Vector2 value)
     {
+        // 遥感快进功能已被禁用
+        // 原始代码已注释，如需重新启用请取消注释
+        /*
         float delta = value.y;
         videoPlayer.frame += (int)(delta * 100);
         videoSphere.GetComponent<MeshRenderer>().material.SetTexture("test", frames[(int)videoPlayer.frame]);
+        */
     }
 
 }

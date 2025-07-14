@@ -86,7 +86,7 @@ public class MovingHandleSliderS : MonoBehaviour
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
         float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
         float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
-        float handleW = containerW * (horizontalFov / 360f) * 1.5f;
+        float handleW = containerW * (horizontalFov / 360f) * 1.8f;
 
         // 设置所有handle的基础属性
         handleRect.anchorMin = new Vector2(0.5f, 0f);

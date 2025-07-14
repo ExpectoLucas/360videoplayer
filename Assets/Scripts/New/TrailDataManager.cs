@@ -163,6 +163,53 @@ public class TrailDataManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 手动保存当前的Trail数据并重新开始录制
+    /// </summary>
+    public void SaveCurrentTrailDataAndRestart()
+    {
+        // 保存当前数据
+        SaveTrailData();
+        
+        // 重新开始录制
+        RestartRecording();
+    }
+
+    /// <summary>
+    /// 公共方法：仅保存当前数据（不重新开始录制）
+    /// </summary>
+    public void SaveCurrentTrailData()
+    {
+        SaveTrailData();
+    }
+
+    /// <summary>
+    /// 重新开始录制（清空当前数据并重新初始化）
+    /// </summary>
+    private void RestartRecording()
+    {
+        if (videoPlayer != null)
+        {
+            // 获取视频时长
+            double duration = videoPlayer.length;
+            
+            // 获取水平和垂直FOV
+            float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // 垂直FOV
+            float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
+            float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
+
+            // 重新初始化数据集合
+            horizontalTrailData = new TrailData(videoFileName, "Horizontal", duration, userName, horizontalFov);
+            verticalTrailData = new TrailData(videoFileName, "Vertical", duration, userName, verticalFov);
+            
+            Debug.Log("Trail data recording restarted");
+        }
+        else
+        {
+            Debug.LogWarning("Cannot restart recording: VideoPlayer is null");
+        }
+    }
+
     private void OnVideoEnd(VideoPlayer vp)
     {
         SaveTrailData();

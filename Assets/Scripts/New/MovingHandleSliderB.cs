@@ -71,7 +71,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         float w = container.rect.width;
         float h = container.rect.height;
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
-        float handleH = h * (verticalFov / 180f) * 1.5f;
+        float handleH = h * (verticalFov / 180f) * 1.8f;
 
         handleRect.sizeDelta = new Vector2(fixedHandleWidth, handleH);
 

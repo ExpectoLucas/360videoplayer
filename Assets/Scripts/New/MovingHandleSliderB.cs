@@ -63,17 +63,18 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
     void LateUpdate()
     {
-        // 1. 更新 handle 的锚点/尺寸/位置
-        handleRect.anchorMin = new Vector2(0f, 0.5f);
-        handleRect.anchorMax = new Vector2(0f, 0.5f);
+        // 1. 更新 handle 的锚点/尺寸/位置 (使用left-stretch模式)
+        handleRect.anchorMin = new Vector2(0f, 0f);
+        handleRect.anchorMax = new Vector2(0f, 1f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
 
         float w = container.rect.width;
         float h = container.rect.height;
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
-        float handleH = h * (verticalFov / 180f) * 1.8f;
+        float handleH = h * (verticalFov / 180f);
 
-        handleRect.sizeDelta = new Vector2(fixedHandleWidth, handleH);
+        // 在left-stretch模式下，sizeDelta.y表示相对于stretch高度的偏移
+        handleRect.sizeDelta = new Vector2(fixedHandleWidth, -h + handleH);
 
         float x = slider.normalizedValue * w;
         float pitch = headTransform.rotation.eulerAngles.x;

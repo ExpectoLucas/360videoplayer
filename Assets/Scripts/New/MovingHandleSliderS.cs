@@ -86,16 +86,15 @@ public class MovingHandleSliderS : MonoBehaviour
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
         float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
         float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
-        float handleW = containerW * (horizontalFov / 360f) * 1.8f;
+        float handleW = containerW * (horizontalFov / 360f);
 
-        // 设置所有handle的基础属性
-        handleRect.anchorMin = new Vector2(0.5f, 0f);
-        handleRect.anchorMax = new Vector2(0.5f, 0f);
+        // 设置所有handle的基础属性 (bottom-stretch)
+        handleRect.anchorMin = new Vector2(0f, 0f);
+        handleRect.anchorMax = new Vector2(1f, 0f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
-        handleRect.sizeDelta = new Vector2(handleW, fixedHandleSize);
-        oppositeHandleRect.anchorMin = handleRect.anchorMin;
-        oppositeHandleRect.anchorMax = handleRect.anchorMax;
-        oppositeHandleRect.pivot = handleRect.pivot;
+        oppositeHandleRect.anchorMin = new Vector2(0f, 0f);
+        oppositeHandleRect.anchorMax = new Vector2(1f, 0f);
+        oppositeHandleRect.pivot = new Vector2(0.5f, 0.5f);
 
         // 垂直位置：slider 进度从底部往上
         float verticalY = slider.normalizedValue * containerH;
@@ -110,48 +109,48 @@ public class MovingHandleSliderS : MonoBehaviour
 
         // 计算handle是否跨越边界
         float handleHalfWidth = handleW * 0.5f;
-        float leftEdge  = container.rect.xMin;   // 等价于本地坐标的最左侧
-        float rightEdge = container.rect.xMax;   // 等价于本地坐标的最右侧
+        float leftEdge  = -containerW * 0.5f;   // 容器的左边界
+        float rightEdge = containerW * 0.5f;    // 容器的右边界
 
         float handleLeftEdge = horizontalX - handleHalfWidth;
         float handleRightEdge = horizontalX + handleHalfWidth;
 
         if (handleLeftEdge < leftEdge)
         {
-            // 计算跨越左边界的部分
+            // 跨越左边界的情况
             float overflow = leftEdge - handleLeftEdge;
             float mainHandleWidth = handleW - overflow;
             float oppositeHandleWidth = overflow;
-
-            // 设置主handle
-            handleRect.sizeDelta = new Vector2(mainHandleWidth, fixedHandleSize);
+            
+            // 主handle (右侧部分)
+            handleRect.sizeDelta = new Vector2(-containerW + mainHandleWidth, fixedHandleSize);
             handleRect.anchoredPosition = new Vector2(leftEdge + mainHandleWidth * 0.5f, verticalY);
 
-            // 设置对侧handle（在右边）
-            oppositeHandleRect.sizeDelta = new Vector2(oppositeHandleWidth, fixedHandleSize);
+            // 对侧handle (左侧溢出部分显示在右边)
+            oppositeHandleRect.sizeDelta = new Vector2(-containerW + oppositeHandleWidth, fixedHandleSize);
             oppositeHandleRect.anchoredPosition = new Vector2(rightEdge - oppositeHandleWidth * 0.5f, verticalY);
             oppositeHandleRect.gameObject.SetActive(true);
         }
         else if (handleRightEdge > rightEdge)
         {
-            // 计算跨越右边界的部分
+            // 跨越右边界的情况
             float overflow = handleRightEdge - rightEdge;
             float mainHandleWidth = handleW - overflow;
             float oppositeHandleWidth = overflow;
-
-            // 设置主handle
-            handleRect.sizeDelta = new Vector2(mainHandleWidth, fixedHandleSize);
+            
+            // 主handle (左侧部分)
+            handleRect.sizeDelta = new Vector2(-containerW + mainHandleWidth, fixedHandleSize);
             handleRect.anchoredPosition = new Vector2(rightEdge - mainHandleWidth * 0.5f, verticalY);
 
-            // 设置对侧handle（在左边）
-            oppositeHandleRect.sizeDelta = new Vector2(oppositeHandleWidth, fixedHandleSize);
+            // 对侧handle (右侧溢出部分显示在左边)
+            oppositeHandleRect.sizeDelta = new Vector2(-containerW + oppositeHandleWidth, fixedHandleSize);
             oppositeHandleRect.anchoredPosition = new Vector2(leftEdge + oppositeHandleWidth * 0.5f, verticalY);
             oppositeHandleRect.gameObject.SetActive(true);
         }
         else
         {
-            // 正常情况，只显示主handle
-            handleRect.sizeDelta = new Vector2(handleW, fixedHandleSize);
+            // 正常情况，没有跨越边界
+            handleRect.sizeDelta = new Vector2(-containerW + handleW, fixedHandleSize);
             handleRect.anchoredPosition = new Vector2(horizontalX, verticalY);
             oppositeHandleRect.gameObject.SetActive(false);
         }

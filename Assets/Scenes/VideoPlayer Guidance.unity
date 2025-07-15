@@ -985,7 +985,7 @@ PrefabInstance:
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: userName
-      value: Guidance_8
+      value: Guidance_10
       objectReference: {fileID: 0}
     - target: {fileID: 1411859034034434928, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
@@ -1075,7 +1075,7 @@ PrefabInstance:
     - target: {fileID: 1674119797305249797, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: fixedHandleSize
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1700352670738833803, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
@@ -1205,12 +1205,27 @@ PrefabInstance:
     - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3238753162262997407, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
@@ -1659,7 +1674,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
         type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8957005344395022556, guid: 9c621f0f6bf85dd4f8e9518e78ea17d8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3614,7 +3654,7 @@ MonoBehaviour:
   container: {fileID: 1834108048}
   vrCamera: {fileID: 1811993412}
   videoPlayer: {fileID: 1824035891}
-  fixedHandleWidth: 5
+  fixedHandleWidth: 2
   recordInterval: 0.5
 --- !u!1 &1811993408
 GameObject:
@@ -4033,6 +4073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUI: {fileID: 862103600}
   toggleButton: 6
+  saveTrailDataButton: 8
   activationThreshold: 0.1
   debounceTime: 0.2
 --- !u!114 &2123112948 stripped

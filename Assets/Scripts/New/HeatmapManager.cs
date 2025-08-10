@@ -20,9 +20,9 @@ public class HeatmapData
 public class POIPoint
 {
     public float time;
-    public float Hangle;  // 水平角度
-    public float Vangle;  // 垂直角度
-    public string hint;   // 提示信息
+    public float Hangle;  // Horizontal angle
+    public float Vangle;  // Vertical angle
+    public string hint;   // Hint information
 
     public POIPoint(float time, float hangle, float vangle, string hint)
     {
@@ -42,35 +42,35 @@ public class POIData
 
 public class HeatmapManager : MonoBehaviour
 {
-    [Header("热力图设置")]
-    [Tooltip("热力图的颜色渐变")]
+    [Header("Heatmap Settings")]
+    [Tooltip("Heatmap color gradient")]
     public Gradient heatmapGradient = new Gradient();
-    [Tooltip("热力图的最大透明度")]
+    [Tooltip("Maximum transparency of heatmap")]
     [Range(0f, 1f)]
     public float maxAlpha = 0.7f;
-    [Tooltip("热力图的网格密度（每秒多少个网格）")]
+    [Tooltip("Heatmap grid density (grids per second)")]
     [Range(0.1f, 10f)]
-    public float timeGridDensity = 1f; // 每秒1个网格
-    [Tooltip("角度网格密度（每度多少个网格）")]
+    public float timeGridDensity = 1f; // 1 grid per second
+    [Tooltip("Angle grid density (grids per degree)")]
     [Range(0.1f, 5f)]
-    public float angleGridDensity = 1f; // 每度1个网格
-    [Tooltip("热力图纹理分辨率")]
+    public float angleGridDensity = 1f; // 1 grid per degree
+    [Tooltip("Heatmap texture resolution")]
     [Range(64, 512)]
     public int textureResolution = 256;
     
-    [Header("UI组件")]
-    [Tooltip("水平滑块容器（用于显示水平热力图）")]
+    [Header("UI Components")]
+    [Tooltip("Horizontal slider container (for displaying horizontal heatmap)")]
     public RectTransform horizontalContainer;
-    [Tooltip("垂直滑块容器（用于显示垂直热力图）")]
+    [Tooltip("Vertical slider container (for displaying vertical heatmap)")]
     public RectTransform verticalContainer;
     
-    [Header("POI设置")]
-    [Tooltip("POI红点的大小")]
+    [Header("POI Settings")]
+    [Tooltip("Size of POI red dots")]
     [Range(2f, 20f)]
     public float poiDotSize = 8f;
-    [Tooltip("POI红点的颜色")]
+    [Tooltip("Color of POI red dots")]
     public Color poiColor = Color.red;
-    [Tooltip("POI提示文本的字体大小")]
+    [Tooltip("Font size of POI hint text")]
     [Range(8, 24)]
     public int hintTextSize = 12;
     
@@ -83,7 +83,7 @@ public class HeatmapManager : MonoBehaviour
     private Image horizontalHeatmapImage;
     private Image verticalHeatmapImage;
     
-    // POI相关对象
+    
     private List<GameObject> horizontalPOIObjects = new List<GameObject>();
     private List<GameObject> verticalPOIObjects = new List<GameObject>();
     private GameObject hintPanel;
@@ -114,19 +114,19 @@ public class HeatmapManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
         
-        // 初始化颜色渐变
+        // Initialize color gradient
         InitializeGradient();
     }
     
     private void InitializeGradient()
     {
-        // 使用Viridis颜色方案
+        // Use Viridis color scheme
         GradientColorKey[] colorKeys = new GradientColorKey[5];
-        colorKeys[0] = new GradientColorKey(new Color(0.267004f, 0.004874f, 0.329415f), 0.0f);  // 深紫色
-        colorKeys[1] = new GradientColorKey(new Color(0.127568f, 0.566949f, 0.550556f), 0.25f); // 青色
-        colorKeys[2] = new GradientColorKey(new Color(0.369214f, 0.788888f, 0.382914f), 0.5f);  // 绿色
-        colorKeys[3] = new GradientColorKey(new Color(0.988362f, 0.998364f, 0.644924f), 0.75f); // 黄色
-        colorKeys[4] = new GradientColorKey(new Color(0.993248f, 0.906157f, 0.143936f), 1.0f);  // 亮黄色
+        colorKeys[0] = new GradientColorKey(new Color(0.267004f, 0.004874f, 0.329415f), 0.0f);  // Dark purple
+        colorKeys[1] = new GradientColorKey(new Color(0.127568f, 0.566949f, 0.550556f), 0.25f); // Cyan
+        colorKeys[2] = new GradientColorKey(new Color(0.369214f, 0.788888f, 0.382914f), 0.5f);  // Green
+        colorKeys[3] = new GradientColorKey(new Color(0.988362f, 0.998364f, 0.644924f), 0.75f); // Yellow
+        colorKeys[4] = new GradientColorKey(new Color(0.993248f, 0.906157f, 0.143936f), 1.0f);  // Bright yellow
         
         GradientAlphaKey[] alphaKeys = new GradientAlphaKey[2];
         alphaKeys[0] = new GradientAlphaKey(0.0f, 0.0f);
@@ -156,7 +156,7 @@ public class HeatmapManager : MonoBehaviour
         Debug.Log($"Searching for heatmap data in: {baseDirectory}");
         Debug.Log($"Looking for video: {videoName}, user: {userName}");
         
-        // 查找包含指定视频名和用户名的文件夹
+        // Find folders containing specified video name and user name
         string[] sessionDirectories = Directory.GetDirectories(baseDirectory);
         bool foundData = false;
         
@@ -165,7 +165,7 @@ public class HeatmapManager : MonoBehaviour
             string folderName = Path.GetFileName(sessionDir);
             Debug.Log($"Checking folder: {folderName}");
             
-            // 检查文件夹名是否包含视频名和用户名
+            // Check if folder name contains video name and user name
             if (folderName.Contains(videoName) && folderName.Contains(userName))
             {
                 Debug.Log($"Found matching folder: {folderName}");
@@ -189,7 +189,7 @@ public class HeatmapManager : MonoBehaviour
     {
         Debug.Log($"Loading session data from: {sessionDirectory}");
         
-        // 加载水平数据
+        // Load horizontal data
         string horizontalPath = Path.Combine(sessionDirectory, "Horizontal.json");
         if (File.Exists(horizontalPath))
         {
@@ -215,7 +215,7 @@ public class HeatmapManager : MonoBehaviour
                 }
                 else
                 {
-                    // 合并数据
+                    
                     horizontalData[key].points.AddRange(data.points);
                     Debug.Log($"Merged horizontal data, total points: {horizontalData[key].points.Count}");
                 }
@@ -230,7 +230,7 @@ public class HeatmapManager : MonoBehaviour
             Debug.Log("Horizontal.json not found in session directory");
         }
         
-        // 加载垂直数据
+        
         string verticalPath = Path.Combine(sessionDirectory, "Vertical.json");
         if (File.Exists(verticalPath))
         {
@@ -256,7 +256,7 @@ public class HeatmapManager : MonoBehaviour
                 }
                 else
                 {
-                    // 合并数据
+                    
                     verticalData[key].points.AddRange(data.points);
                     Debug.Log($"Merged vertical data, total points: {verticalData[key].points.Count}");
                 }
@@ -288,11 +288,11 @@ public class HeatmapManager : MonoBehaviour
             
             if (data != null && data.points != null)
             {
-                // 过滤出当前视频的POI数据
+                
                 List<POIPoint> filteredPoints = new List<POIPoint>();
                 foreach (var point in data.points)
                 {
-                    // 如果videoName为空或者匹配当前视频，则添加该POI点
+                    
                     if (string.IsNullOrEmpty(data.videoName) || data.videoName == videoName)
                     {
                         filteredPoints.Add(point);
@@ -325,7 +325,7 @@ public class HeatmapManager : MonoBehaviour
     {
         Debug.Log("Generating heatmaps...");
         
-        // 生成水平热力图
+        // Generate horizontal heatmap
         if (horizontalContainer != null)
         {
             Debug.Log($"Generating horizontal heatmap with {horizontalData.Count} data sets");
@@ -339,7 +339,7 @@ public class HeatmapManager : MonoBehaviour
             Debug.LogWarning("Horizontal container is null, skipping horizontal heatmap generation");
         }
         
-        // 生成垂直热力图
+        // Generate vertical heatmap
         if (verticalContainer != null)
         {
             Debug.Log($"Generating vertical heatmap with {verticalData.Count} data sets");
@@ -364,10 +364,10 @@ public class HeatmapManager : MonoBehaviour
         
         Debug.Log($"Generating horizontal heatmap: {data.points.Count} points, duration: {data.videoDuration}s, FOV: {data.fov}°");
         
-        // 创建热力图纹理
+        
         Texture2D heatmapTexture = CreateHeatmapTexture(data, true);
         
-        // 创建或更新热力图UI对象
+        
         if (horizontalHeatmapObject == null)
         {
             horizontalHeatmapObject = new GameObject("HorizontalHeatmap");
@@ -376,17 +376,17 @@ public class HeatmapManager : MonoBehaviour
             RectTransform rectTransform = horizontalHeatmapObject.AddComponent<RectTransform>();
             horizontalHeatmapImage = horizontalHeatmapObject.AddComponent<Image>();
             
-            // 设置UI属性
+            
             rectTransform.anchorMin = Vector2.zero;
             rectTransform.anchorMax = Vector2.one;
             rectTransform.offsetMin = Vector2.zero;
             rectTransform.offsetMax = Vector2.zero;
             
-            // 确保热力图在底层显示
+            
             horizontalHeatmapObject.transform.SetAsFirstSibling();
         }
         
-        // 创建Sprite并设置到Image
+        
         Sprite heatmapSprite = Sprite.Create(heatmapTexture, new Rect(0, 0, heatmapTexture.width, heatmapTexture.height), Vector2.zero);
         horizontalHeatmapImage.sprite = heatmapSprite;
         
@@ -403,10 +403,10 @@ public class HeatmapManager : MonoBehaviour
         
         Debug.Log($"Generating vertical heatmap: {data.points.Count} points, duration: {data.videoDuration}s, FOV: {data.fov}°");
         
-        // 创建热力图纹理
+        
         Texture2D heatmapTexture = CreateHeatmapTexture(data, false);
         
-        // 创建或更新热力图UI对象
+
         if (verticalHeatmapObject == null)
         {
             verticalHeatmapObject = new GameObject("VerticalHeatmap");
@@ -415,17 +415,17 @@ public class HeatmapManager : MonoBehaviour
             RectTransform rectTransform = verticalHeatmapObject.AddComponent<RectTransform>();
             verticalHeatmapImage = verticalHeatmapObject.AddComponent<Image>();
             
-            // 设置UI属性
+
             rectTransform.anchorMin = Vector2.zero;
             rectTransform.anchorMax = Vector2.one;
             rectTransform.offsetMin = Vector2.zero;
             rectTransform.offsetMax = Vector2.zero;
             
-            // 确保热力图在底层显示
+
             verticalHeatmapObject.transform.SetAsFirstSibling();
         }
         
-        // 创建Sprite并设置到Image
+
         Sprite heatmapSprite = Sprite.Create(heatmapTexture, new Rect(0, 0, heatmapTexture.width, heatmapTexture.height), Vector2.zero);
         verticalHeatmapImage.sprite = heatmapSprite;
         
@@ -434,40 +434,40 @@ public class HeatmapManager : MonoBehaviour
     
     private Texture2D CreateHeatmapTexture(HeatmapData data, bool isHorizontal)
     {
-        // 确定纹理尺寸
+        // Determine texture dimensions
         int width, height;
         if (isHorizontal)
         {
-            // 水平热力图：X轴角度，Y轴时间
+            // Horizontal heatmap: X-axis angle, Y-axis time
             width = Mathf.RoundToInt(360f * angleGridDensity);
             height = Mathf.RoundToInt((float)data.videoDuration * timeGridDensity);
         }
         else
         {
-            // 垂直热力图：X轴时间，Y轴角度
+            // Vertical heatmap: X-axis time, Y-axis angle
             width = Mathf.RoundToInt((float)data.videoDuration * timeGridDensity);
             height = Mathf.RoundToInt(180f * angleGridDensity);
         }
         
-        // 限制纹理尺寸以避免性能问题
+  
         width = Mathf.Clamp(width, 64, textureResolution);
         height = Mathf.Clamp(height, 64, textureResolution);
         
         Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
         texture.filterMode = FilterMode.Bilinear;
         
-        // 初始化纹理为透明
+
         Color[] pixels = new Color[width * height];
         for (int i = 0; i < pixels.Length; i++)
         {
             pixels[i] = Color.clear;
         }
         
-        // 统计访问次数
+     
         Dictionary<Vector2Int, int> gridVisits = new Dictionary<Vector2Int, int>();
 
-        // 新增：每秒局部最大值（行或列）
-        Dictionary<int, int> axisMax = new Dictionary<int, int>();   // key = 行(y) 或 列(x)
+     
+        Dictionary<int, int> axisMax = new Dictionary<int, int>();   
 
 
         
@@ -482,14 +482,14 @@ public class HeatmapManager : MonoBehaviour
                 Vector2Int gridPos;
                 if (isHorizontal)
                 {
-                    // 水平热力图：X轴角度，Y轴时间
+                    // Horizontal heatmap: X-axis angle, Y-axis time
                     int x = Mathf.Clamp(Mathf.FloorToInt((expandedAngle + 180f) / 360f * width), 0, width - 1);
                     int y = Mathf.Clamp(Mathf.FloorToInt((float)point.time / (float)data.videoDuration * height), 0, height - 1);
                     gridPos = new Vector2Int(x, y);
                 }
                 else
                 {
-                    // 垂直热力图：X轴时间，Y轴角度
+                    // Vertical heatmap: X-axis time, Y-axis angle
                     int x = Mathf.Clamp(Mathf.FloorToInt((float)point.time / (float)data.videoDuration * width), 0, width - 1);
                     int y = Mathf.Clamp(Mathf.FloorToInt((expandedAngle + 90f) / 180f * height), 0, height - 1);
                     gridPos = new Vector2Int(x, y);
@@ -505,13 +505,13 @@ public class HeatmapManager : MonoBehaviour
             }
         }
         
-        // 设置像素颜色
+
         foreach (var kvp in gridVisits)
         {
             int axisKey = isHorizontal ? kvp.Key.y : kvp.Key.x;
             if (axisMax.TryGetValue(axisKey, out int localMax) && localMax > 0)
             {
-                float intensity = (float)kvp.Value / localMax;   // 0-1 归一化
+                float intensity = (float)kvp.Value / localMax;   // 0-1 normalized
                 Color color = heatmapGradient.Evaluate(intensity);
                 int index = kvp.Key.y * width + kvp.Key.x;
                 if (index >= 0 && index < pixels.Length)
@@ -526,28 +526,28 @@ public class HeatmapManager : MonoBehaviour
     }
     
     /// <summary>
-    /// 根据FOV扩展水平角度范围，处理环形特性
+    /// Expand horizontal angle range based on FOV, handling circular characteristics
     /// </summary>
     private List<float> ExpandAngleByFOV(float centerAngle, float fov)
     {
         List<float> expandedAngles = new List<float>();
         float halfFov = fov * 0.5f;
         
-        // 计算角度范围
+        // Calculate angle range
         float startAngle = centerAngle - halfFov;
         float endAngle = centerAngle + halfFov;
         
-        // 处理环形特性
+        // Handle circular characteristics
         if (startAngle < -180f)
         {
-            // 需要跨越-180度边界
-            // 第一部分：从-180度到endAngle
+            // Need to cross -180 degree boundary
+            // First part: from -180 degrees to endAngle
             for (float angle = -180f; angle <= endAngle; angle += 1f / angleGridDensity)
             {
                 expandedAngles.Add(angle);
             }
             
-            // 第二部分：从startAngle+360度到180度（相当于环的另一侧）
+            // Second part: from startAngle+360 degrees to 180 degrees (equivalent to the other side of the circle)
             float overflowStart = startAngle + 360f;
             for (float angle = overflowStart; angle <= 180f; angle += 1f / angleGridDensity)
             {
@@ -559,14 +559,14 @@ public class HeatmapManager : MonoBehaviour
         }
         else if (endAngle > 180f)
         {
-            // 需要跨越180度边界
-            // 第一部分：从startAngle到180度
+            // Need to cross 180 degree boundary
+            // First part: from startAngle to 180 degrees
             for (float angle = startAngle; angle <= 180f; angle += 1f / angleGridDensity)
             {
                 expandedAngles.Add(angle);
             }
             
-            // 第二部分：从-180度到endAngle-360度（相当于环的另一侧）
+            // Second part: from -180 degrees to endAngle-360 degrees (equivalent to the other side of the circle)
             float overflowEnd = endAngle - 360f;
             for (float angle = -180f; angle <= overflowEnd; angle += 1f / angleGridDensity)
             {
@@ -578,7 +578,7 @@ public class HeatmapManager : MonoBehaviour
         }
         else
         {
-            // 正常情况，不跨越边界
+            // Normal case, not crossing boundaries
             for (float angle = startAngle; angle <= endAngle; angle += 1f / angleGridDensity)
             {
                 expandedAngles.Add(angle);
@@ -592,24 +592,24 @@ public class HeatmapManager : MonoBehaviour
     }
     
     /// <summary>
-    /// 根据FOV扩展垂直角度范围，裁切超出-90到90度的部分
+    /// Expand vertical angle range based on FOV, clipping parts that exceed -90 to 90 degrees
     /// </summary>
     private List<float> ExpandVerticalAngleByFOV(float centerAngle, float fov)
     {
         List<float> expandedAngles = new List<float>();
         float halfFov = fov * 0.5f;
         
-        // 计算角度范围
+        // Calculate angle range
         float startAngle = centerAngle - halfFov;
         float endAngle = centerAngle + halfFov;
         
-        // 裁切超出-90到90度的部分
+        // Clip parts that exceed -90 to 90 degrees
         float originalStart = startAngle;
         float originalEnd = endAngle;
         startAngle = Mathf.Max(startAngle, -90f);
         endAngle = Mathf.Min(endAngle, 90f);
         
-        // 生成角度列表
+        // Generate angle list
         for (float angle = startAngle; angle <= endAngle; angle += 1f / angleGridDensity)
         {
             expandedAngles.Add(angle);
@@ -632,7 +632,7 @@ public class HeatmapManager : MonoBehaviour
     
     private void ClearExistingHeatmaps()
     {
-        // 清除水平热力图
+        // Clear horizontal heatmap
         if (horizontalHeatmapObject != null)
         {
             DestroyImmediate(horizontalHeatmapObject);
@@ -640,7 +640,7 @@ public class HeatmapManager : MonoBehaviour
             horizontalHeatmapImage = null;
         }
         
-        // 清除垂直热力图
+        // Clear vertical heatmap
         if (verticalHeatmapObject != null)
         {
             DestroyImmediate(verticalHeatmapObject);
@@ -648,10 +648,10 @@ public class HeatmapManager : MonoBehaviour
             verticalHeatmapImage = null;
         }
         
-        // 清除POI标记
+        // Clear POI markers
         ClearPOIMarkers();
         
-        // 清除数据
+        // Clear data
         horizontalData.Clear();
         verticalData.Clear();
         poiData.Clear();
@@ -661,7 +661,7 @@ public class HeatmapManager : MonoBehaviour
     {
         ClearExistingHeatmaps();
         
-        // 清除提示面板
+        // Clear hint panel
         if (hintPanel != null)
         {
             DestroyImmediate(hintPanel);
@@ -674,10 +674,10 @@ public class HeatmapManager : MonoBehaviour
     {
         Debug.Log("Generating POI markers...");
         
-        // 清除之前的POI标记
+        // Clear previous POI markers
         ClearPOIMarkers();
         
-        // 创建提示面板（如果不存在）
+        // Create hint panel (if it doesn't exist)
         CreateHintPanel();
         
         foreach (var kvp in poiData)
@@ -689,13 +689,13 @@ public class HeatmapManager : MonoBehaviour
             
             foreach (var poi in data.points)
             {
-                // 在水平容器中创建POI标记
+                // Create POI markers in horizontal container
                 if (horizontalContainer != null)
                 {
                     CreatePOIMarker(poi, horizontalContainer, true);
                 }
                 
-                // 在垂直容器中创建POI标记
+                // Create POI markers in vertical container
                 if (verticalContainer != null)
                 {
                     CreatePOIMarker(poi, verticalContainer, false);
@@ -708,39 +708,39 @@ public class HeatmapManager : MonoBehaviour
     
     private void CreatePOIMarker(POIPoint poi, RectTransform container, bool isHorizontal)
     {
-        // 创建POI标记游戏对象
+        // Create POI marker game object
         GameObject poiObject = new GameObject($"POI_{poi.time}_{(isHorizontal ? "H" : "V")}");
         poiObject.transform.SetParent(container, false);
         
-        // 添加RectTransform组件
+        // Add RectTransform component
         RectTransform rectTransform = poiObject.AddComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(poiDotSize, poiDotSize);
         
-        // 添加Image组件显示红点
+        // Add Image component to display red dot
         Image dotImage = poiObject.AddComponent<Image>();
         dotImage.color = poiColor;
         
-        // 创建圆形纹理
+        // Create circular texture
         Texture2D circleTexture = CreateCircleTexture((int)poiDotSize);
         Sprite circleSprite = Sprite.Create(circleTexture, new Rect(0, 0, circleTexture.width, circleTexture.height), Vector2.one * 0.5f);
         dotImage.sprite = circleSprite;
         
-        // 计算POI在容器中的位置
+        // Calculate POI position in container
         Vector2 normalizedPosition = CalculatePOIPosition(poi, isHorizontal);
         
-        // 设置锚点和位置
+        // Set anchor and position
         rectTransform.anchorMin = normalizedPosition;
         rectTransform.anchorMax = normalizedPosition;
         rectTransform.anchoredPosition = Vector2.zero;
         
-        // 添加悬浮检测组件
+        // Add hover detection component
         POIHoverDetector hoverDetector = poiObject.AddComponent<POIHoverDetector>();
         hoverDetector.Initialize(poi.hint, this);
         
-        // 确保POI在最上层显示
+        // Ensure POI is displayed on top layer
         poiObject.transform.SetAsLastSibling();
         
-        // 添加到对应列表
+        // Add to corresponding list
         if (isHorizontal)
         {
             horizontalPOIObjects.Add(poiObject);
@@ -759,12 +759,12 @@ public class HeatmapManager : MonoBehaviour
         
         if (isHorizontal)
         {
-            // 水平热力图：X轴角度(-180到180)，Y轴时间
-            // 获取视频总时长（从已加载的热力图数据中）
+            // Horizontal heatmap: X-axis angle (-180 to 180), Y-axis time
+            // Get total video duration (from loaded heatmap data)
             double videoDuration = GetVideoDuration();
             
-            float normalizedX = (poi.Hangle + 180f) / 360f; // 将-180到180映射到0到1
-            float normalizedY = (float)(poi.time / videoDuration); // 将时间映射到0到1
+            float normalizedX = (poi.Hangle + 180f) / 360f; // Map -180 to 180 to 0 to 1
+            float normalizedY = (float)(poi.time / videoDuration); // Map time to 0 to 1
             
             normalizedPosition = new Vector2(
                 Mathf.Clamp01(normalizedX),
@@ -773,11 +773,11 @@ public class HeatmapManager : MonoBehaviour
         }
         else
         {
-            // 垂直热力图：X轴时间，Y轴角度(-90到90)
+            // Vertical heatmap: X-axis time, Y-axis angle (-90 to 90)
             double videoDuration = GetVideoDuration();
             
-            float normalizedX = (float)(poi.time / videoDuration); // 将时间映射到0到1
-            float normalizedY = (poi.Vangle + 90f) / 180f; // 将-90到90映射到0到1
+            float normalizedX = (float)(poi.time / videoDuration); // Map time to 0 to 1
+            float normalizedY = (poi.Vangle + 90f) / 180f; // Map -90 to 90 to 0 to 1
             
             normalizedPosition = new Vector2(
                 Mathf.Clamp01(normalizedX),
@@ -790,7 +790,7 @@ public class HeatmapManager : MonoBehaviour
     
     private double GetVideoDuration()
     {
-        // 从已加载的热力图数据中获取视频时长
+        // Get video duration from loaded heatmap data
         foreach (var kvp in horizontalData)
         {
             return kvp.Value.videoDuration;
@@ -799,7 +799,7 @@ public class HeatmapManager : MonoBehaviour
         {
             return kvp.Value.videoDuration;
         }
-        return 60.0; // 默认值
+        return 60.0; // Default value
     }
     
     private Texture2D CreateCircleTexture(int size)
@@ -820,12 +820,12 @@ public class HeatmapManager : MonoBehaviour
                 
                 if (distance <= radius)
                 {
-                    // 在圆内，设置为不透明
+    
                     pixels[y * size + x] = Color.white;
                 }
                 else
                 {
-                    // 在圆外，设置为透明
+        
                     pixels[y * size + x] = Color.clear;
                 }
             }
@@ -840,11 +840,11 @@ public class HeatmapManager : MonoBehaviour
     {
         if (hintPanel != null) return;
         
-        // 创建提示面板
+ 
         hintPanel = new GameObject("HintPanel");
         RectTransform hintRect = hintPanel.AddComponent<RectTransform>();
         
-        // 将提示面板添加到Canvas中（寻找最顶层的Canvas）
+   
         Canvas canvas = FindObjectOfType<Canvas>();
         if (canvas != null)
         {
@@ -856,16 +856,15 @@ public class HeatmapManager : MonoBehaviour
             return;
         }
         
-        // 设置面板属性
+ 
         hintRect.sizeDelta = new Vector2(200, 50);
         hintRect.anchorMin = Vector2.zero;
         hintRect.anchorMax = Vector2.zero;
-        
-        // 添加背景图片
+
         Image backgroundImage = hintPanel.AddComponent<Image>();
-        backgroundImage.color = new Color(0, 0, 0, 0.8f); // 半透明黑色背景
+        backgroundImage.color = new Color(0, 0, 0, 0.8f); 
         
-        // 创建文本对象
+   
         GameObject textObject = new GameObject("HintText");
         textObject.transform.SetParent(hintPanel.transform, false);
         
@@ -881,20 +880,20 @@ public class HeatmapManager : MonoBehaviour
         hintText.color = Color.white;
         hintText.alignment = TextAnchor.MiddleCenter;
         
-        // 尝试找到字体
+
         Font font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         if (font != null)
         {
             hintText.font = font;
         }
         
-        // 初始状态设置为不可见
+
         hintPanel.SetActive(false);
     }
     
     private void ClearPOIMarkers()
     {
-        // 清除水平POI标记
+        // Clear horizontal POI markers
         foreach (var obj in horizontalPOIObjects)
         {
             if (obj != null)
@@ -904,7 +903,7 @@ public class HeatmapManager : MonoBehaviour
         }
         horizontalPOIObjects.Clear();
         
-        // 清除垂直POI标记
+        // Clear vertical POI markers
         foreach (var obj in verticalPOIObjects)
         {
             if (obj != null)
@@ -922,7 +921,7 @@ public class HeatmapManager : MonoBehaviour
         hintText.text = hint;
         hintPanel.SetActive(true);
         
-        // 将世界坐标转换为屏幕坐标
+        // Convert world coordinates to screen coordinates
         Canvas canvas = hintPanel.GetComponentInParent<Canvas>();
         if (canvas != null)
         {
@@ -933,7 +932,7 @@ public class HeatmapManager : MonoBehaviour
             Vector2 localPoint;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, cam, out localPoint);
             
-            hintPanel.GetComponent<RectTransform>().localPosition = localPoint + new Vector2(10, 10); // 稍微偏移一点
+            hintPanel.GetComponent<RectTransform>().localPosition = localPoint + new Vector2(10, 10); // Slightly offset
         }
     }
     

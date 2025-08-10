@@ -7,49 +7,49 @@ using System.IO;
 [RequireComponent(typeof(XRController))]
 public class XRControllerToggleUI : MonoBehaviour
 {
-    [Tooltip("要隐藏/显示的 UI 根节点")]
+    [Tooltip("UI root node to hide/show")]
     [SerializeField] private GameObject playerUI;
 
-    [Tooltip("监听哪个按钮来切换 UI，比如 Grip, Trigger, PrimaryButton(A), SecondaryButton(B) 等")]
+    [Tooltip("Button to listen for UI toggle, such as Grip, Trigger, PrimaryButton(A), SecondaryButton(B), etc.")]
     [SerializeField] private InputHelpers.Button toggleButton = InputHelpers.Button.Grip;
 
-    [Tooltip("保存TrailData并更新热力图的按键")]
+    [Tooltip("Button to save TrailData and update the heatmap")]
     [SerializeField] private InputHelpers.Button saveTrailDataButton = InputHelpers.Button.Grip;
 
-    [Tooltip("按下程度阈值（一般小于 0.1 就算按下）")]
+    [Tooltip("Press threshold (typically considered pressed when below 0.1)")]
     [SerializeField] private float activationThreshold = 0.1f;
 
-    [Tooltip("防抖时间间隔（秒）")]
+    [Tooltip("Debounce time interval (seconds)")]
     [SerializeField] private float debounceTime = 0.2f;
 
     private XRController xrController;
     private bool previousState = false;
-    private bool previousSaveState = false;  // 用于跟踪保存按键的状态
+    private bool previousSaveState = false;  // Used to track the save button state
     private CanvasGroup uiCanvasGroup;
     private float lastToggleTime = 0f;
-    private float lastSaveTime = 0f;  // 用于防抖保存按键
+    private float lastSaveTime = 0f;  // Used for save button debouncing
 
     void Awake()
     {
         xrController = GetComponent<XRController>();
         if (playerUI == null)
         {
-            Debug.LogWarning("XRControllerToggleUI: 没有指定 playerUI，切换功能不会生效。");
+            Debug.LogWarning("XRControllerToggleUI: No playerUI specified, toggle functionality will not work.");
             return;
         }
 
-        // 尝试获取CanvasGroup
+        // Try to get CanvasGroup
         uiCanvasGroup = playerUI.GetComponent<CanvasGroup>();
         if (uiCanvasGroup == null)
         {
             uiCanvasGroup = playerUI.GetComponentInChildren<CanvasGroup>();
         }
 
-        // 如果没有CanvasGroup，自动添加一个
+        // If no CanvasGroup, add one automatically
         if (uiCanvasGroup == null)
         {
             uiCanvasGroup = playerUI.AddComponent<CanvasGroup>();
-            Debug.Log("XRControllerToggleUI: 自动添加了CanvasGroup组件到 " + playerUI.name);
+            Debug.Log("XRControllerToggleUI: Automatically added CanvasGroup component to " + playerUI.name);
         }
     }
 
@@ -58,7 +58,7 @@ public class XRControllerToggleUI : MonoBehaviour
         if (playerUI == null || xrController == null || uiCanvasGroup == null)
             return;
 
-        // 处理UI切换按键
+        // Handle UI toggle button
         bool isPressed = false;
         InputHelpers.IsPressed(
             xrController.inputDevice,
@@ -67,7 +67,7 @@ public class XRControllerToggleUI : MonoBehaviour
             activationThreshold
         );
 
-        // 边沿触发 + 防抖
+        // Edge triggering + debouncing
         if (isPressed && !previousState && Time.time - lastToggleTime > debounceTime)
         {
             lastToggleTime = Time.time;
@@ -75,7 +75,7 @@ public class XRControllerToggleUI : MonoBehaviour
         }
         previousState = isPressed;
 
-        // 处理TrailData保存按键
+        // Handle TrailData save button
         bool isSavePressed = false;
         InputHelpers.IsPressed(
             xrController.inputDevice,
@@ -84,7 +84,7 @@ public class XRControllerToggleUI : MonoBehaviour
             activationThreshold
         );
 
-        // 边沿触发 + 防抖
+        // Edge triggering + debouncing
         if (isSavePressed && !previousSaveState && Time.time - lastSaveTime > debounceTime)
         {
             lastSaveTime = Time.time;
@@ -99,14 +99,14 @@ public class XRControllerToggleUI : MonoBehaviour
         
         if (isVisible)
         {
-            // 隐藏UI
+            // Hide UI
             uiCanvasGroup.alpha = 0f;
             uiCanvasGroup.interactable = false;
             uiCanvasGroup.blocksRaycasts = false;
         }
         else
         {
-            // 显示UI
+            // Show UI
             uiCanvasGroup.alpha = 1f;
             uiCanvasGroup.interactable = true;
             uiCanvasGroup.blocksRaycasts = true;
@@ -114,13 +114,13 @@ public class XRControllerToggleUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 保存当前TrailData并更新热力图
+    /// Save current TrailData and update heatmap
     /// </summary>
     private void SaveTrailDataAndUpdateHeatmap()
     {
         Debug.Log("XRController: Saving trail data and updating heatmap...");
 
-        // 1. 保存当前的TrailData并重新开始录制
+        // 1. Save current TrailData and restart recording
         TrailDataManager trailDataManager = TrailDataManager.Instance;
         if (trailDataManager != null)
         {
@@ -132,23 +132,23 @@ public class XRControllerToggleUI : MonoBehaviour
             Debug.LogWarning("XRController: TrailDataManager instance not found");
         }
 
-        // 2. 更新热力图
+        // 2. Update heatmap
         UpdateHeatmap();
     }
 
     /// <summary>
-    /// 更新热力图显示
+    /// Update heatmap display
     /// </summary>
     private void UpdateHeatmap()
     {
-        // 获取视频名称和用户名
+        // Get video name and user name
         VideoPlayerUIController controller = FindObjectOfType<VideoPlayerUIController>();
         if (controller != null)
         {
             string videoName = "";
             string userName = controller.userName;
 
-            // 获取视频文件名
+            // Get video file name
             if (!string.IsNullOrEmpty(controller.videoURL) && controller.videoURL != "null")
             {
                 videoName = Path.GetFileNameWithoutExtension(controller.videoURL);
@@ -165,7 +165,7 @@ public class XRControllerToggleUI : MonoBehaviour
                 Debug.LogWarning("XRController: Username is empty, using default 'User'");
             }
 
-            // 更新热力图
+            // Update heatmap
             HeatmapManager heatmapManager = HeatmapManager.Instance;
             if (heatmapManager != null)
             {

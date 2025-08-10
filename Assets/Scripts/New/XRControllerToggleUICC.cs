@@ -6,19 +6,19 @@ using UnityEngine.UI;
 [RequireComponent(typeof(XRController))]
 public class XRControllerToggleUICC : MonoBehaviour
 {
-    [Tooltip("要隐藏/显示的多个 UI 对象")]
+    [Tooltip("Multiple UI objects to hide/show")]
     [SerializeField] private GameObject[] uiObjects;
 
-    [Tooltip("永远隐藏的 UI 对象（不受按钮切换影响）")]
+    [Tooltip("Always hidden UI objects (not affected by button toggle)")]
     [SerializeField] private GameObject[] alwaysHiddenUIObjects;
 
-    [Tooltip("监听哪个按钮来切换 UI，比如 Grip, Trigger, PrimaryButton(A), SecondaryButton(B) 等")]
+    [Tooltip("Button to listen for UI toggle, such as Grip, Trigger, PrimaryButton(A), SecondaryButton(B), etc.")]
     [SerializeField] private InputHelpers.Button toggleButton = InputHelpers.Button.Grip;
 
-    [Tooltip("按下程度阈值（一般小于 0.1 就算按下）")]
+    [Tooltip("Press threshold (typically considered pressed when below 0.1)")]
     [SerializeField] private float activationThreshold = 0.1f;
 
-    [Tooltip("防抖时间间隔（秒）")]
+    [Tooltip("Debounce time interval (seconds)")]
     [SerializeField] private float debounceTime = 0.2f;
 
     private XRController xrController;
@@ -31,13 +31,13 @@ public class XRControllerToggleUICC : MonoBehaviour
     {
         xrController = GetComponent<XRController>();
         
-        // 处理预设置的UI对象
+        // Process preset UI objects
         if (uiObjects != null && uiObjects.Length > 0)
         {
             InitializeStaticUIObjects();
         }
 
-        // 处理永远隐藏的UI对象
+        // Process always hidden UI objects
         if (alwaysHiddenUIObjects != null && alwaysHiddenUIObjects.Length > 0)
         {
             InitializeAlwaysHiddenUIObjects();
@@ -46,29 +46,29 @@ public class XRControllerToggleUICC : MonoBehaviour
 
     private void InitializeStaticUIObjects()
     {
-        // 初始化CanvasGroup数组
+        // Initialize CanvasGroup array
         uiCanvasGroups = new CanvasGroup[uiObjects.Length];
         
         for (int i = 0; i < uiObjects.Length; i++)
         {
             if (uiObjects[i] == null)
             {
-                Debug.LogWarning($"XRControllerToggleUI: UI对象索引{i}为空，跳过该对象。");
+                Debug.LogWarning($"XRControllerToggleUI: UI object at index {i} is null, skipping this object.");
                 continue;
             }
 
-            // 尝试获取CanvasGroup
+            // Try to get CanvasGroup
             CanvasGroup canvasGroup = uiObjects[i].GetComponent<CanvasGroup>();
             if (canvasGroup == null)
             {
                 canvasGroup = uiObjects[i].GetComponentInChildren<CanvasGroup>();
             }
 
-            // 如果没有CanvasGroup，自动添加一个
+            // If no CanvasGroup, add one automatically
             if (canvasGroup == null)
             {
                 canvasGroup = uiObjects[i].AddComponent<CanvasGroup>();
-                Debug.Log($"XRControllerToggleUI: 自动添加了CanvasGroup组件到 {uiObjects[i].name}");
+                Debug.Log($"XRControllerToggleUI: Automatically added CanvasGroup component to {uiObjects[i].name}");
             }
             
             uiCanvasGroups[i] = canvasGroup;
@@ -77,36 +77,36 @@ public class XRControllerToggleUICC : MonoBehaviour
 
     private void InitializeAlwaysHiddenUIObjects()
     {
-        // 初始化永远隐藏UI的CanvasGroup数组
+        // Initialize CanvasGroup array for always hidden UI
         alwaysHiddenCanvasGroups = new CanvasGroup[alwaysHiddenUIObjects.Length];
         
         for (int i = 0; i < alwaysHiddenUIObjects.Length; i++)
         {
             if (alwaysHiddenUIObjects[i] == null)
             {
-                Debug.LogWarning($"XRControllerToggleUI: 永远隐藏UI对象索引{i}为空，跳过该对象。");
+                Debug.LogWarning($"XRControllerToggleUI: Always hidden UI object at index {i} is null, skipping this object.");
                 continue;
             }
 
-            // 尝试获取CanvasGroup
+            // Try to get CanvasGroup
             CanvasGroup canvasGroup = alwaysHiddenUIObjects[i].GetComponent<CanvasGroup>();
             if (canvasGroup == null)
             {
                 canvasGroup = alwaysHiddenUIObjects[i].GetComponentInChildren<CanvasGroup>();
             }
 
-            // 如果没有CanvasGroup，自动添加一个
+            // If no CanvasGroup, add one automatically
             if (canvasGroup == null)
             {
                 canvasGroup = alwaysHiddenUIObjects[i].AddComponent<CanvasGroup>();
-                Debug.Log($"XRControllerToggleUI: 自动添加了CanvasGroup组件到永远隐藏UI {alwaysHiddenUIObjects[i].name}");
+                Debug.Log($"XRControllerToggleUI: Automatically added CanvasGroup component to always hidden UI {alwaysHiddenUIObjects[i].name}");
             }
             
             alwaysHiddenCanvasGroups[i] = canvasGroup;
             
-            // 立即隐藏这些UI对象
+            // Immediately hide these UI objects
             SetUIVisibility(canvasGroup, false);
-            Debug.Log($"XRControllerToggleUI: 永远隐藏UI对象 {alwaysHiddenUIObjects[i].name} 已设置为隐藏状态");
+            Debug.Log($"XRControllerToggleUI: Always hidden UI object {alwaysHiddenUIObjects[i].name} has been set to hidden state");
         }
     }
 
@@ -123,7 +123,7 @@ public class XRControllerToggleUICC : MonoBehaviour
             activationThreshold
         );
 
-        // 边沿触发 + 防抖
+        // Edge triggering + debouncing
         if (isPressed && !previousState && Time.time - lastToggleTime > debounceTime)
         {
             lastToggleTime = Time.time;
@@ -134,10 +134,10 @@ public class XRControllerToggleUICC : MonoBehaviour
 
     private void ToggleUI()
     {
-        // 检查当前UI状态
+        // Check current UI state
         bool isVisible = GetCurrentUIVisibility();
         
-        // 切换静态UI对象的状态
+        // Toggle static UI object state
         if (uiCanvasGroups != null)
         {
             for (int i = 0; i < uiCanvasGroups.Length; i++)
@@ -152,7 +152,7 @@ public class XRControllerToggleUICC : MonoBehaviour
 
     private bool GetCurrentUIVisibility()
     {
-        // 检查静态UI的状态
+        // Check static UI state
         if (uiCanvasGroups != null)
         {
             for (int i = 0; i < uiCanvasGroups.Length; i++)
@@ -164,21 +164,21 @@ public class XRControllerToggleUICC : MonoBehaviour
             }
         }
 
-        return false; // 默认为隐藏状态
+        return false; // Default to hidden state
     }
 
     private void SetUIVisibility(CanvasGroup canvasGroup, bool visible)
     {
         if (visible)
         {
-            // 显示UI
+            // Show UI
             canvasGroup.alpha = 1f;
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
         }
         else
         {
-            // 隐藏UI
+            // Hide UI
             canvasGroup.alpha = 0f;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;

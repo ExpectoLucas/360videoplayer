@@ -10,10 +10,10 @@ public class POIHoverDetector : MonoBehaviour
     private HeatmapManager heatmapManager;
     private bool isHovering = false;
     
-    [Header("VR手柄设置")]
+    [Header("VR Controller Settings")]
     public XRController leftController;
     public XRController rightController;
-    public float raycastDistance = 10f; // 射线检测距离
+    public float raycastDistance = 10f; // Raycast detection distance
     
     private GraphicRaycaster graphicRaycaster;
     private Canvas canvas;
@@ -24,7 +24,7 @@ public class POIHoverDetector : MonoBehaviour
         hintText = hint;
         heatmapManager = manager;
         
-        // 获取必要的组件
+        // Get necessary components
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
         if (canvas != null)
@@ -32,7 +32,7 @@ public class POIHoverDetector : MonoBehaviour
             graphicRaycaster = canvas.GetComponent<GraphicRaycaster>();
         }
         
-        // 自动查找VR手柄
+        // Automatically find VR controllers
         if (leftController == null || rightController == null)
         {
             FindVRControllers();
@@ -65,30 +65,30 @@ public class POIHoverDetector : MonoBehaviour
         bool currentlyHovering = false;
         Vector3 activeControllerPosition = Vector3.zero;
         
-        // 检查左手柄射线
+        // Check left controller ray
         if (leftController != null && CheckControllerRaycast(leftController, out Vector3 leftHitPoint))
         {
             currentlyHovering = true;
             activeControllerPosition = leftController.transform.position;
         }
         
-        // 检查右手柄射线
+        // Check right controller ray
         if (rightController != null && CheckControllerRaycast(rightController, out Vector3 rightHitPoint))
         {
             currentlyHovering = true;
             activeControllerPosition = rightController.transform.position;
         }
         
-        // 处理悬浮状态变化
+        // Handle hover state changes
         if (currentlyHovering && !isHovering)
         {
-            // 开始悬浮
+            // Start hovering
             isHovering = true;
             OnHoverEnter(activeControllerPosition);
         }
         else if (!currentlyHovering && isHovering)
         {
-            // 结束悬浮
+            // End hovering
             isHovering = false;
             OnHoverExit();
         }
@@ -101,18 +101,18 @@ public class POIHoverDetector : MonoBehaviour
         if (controller == null || canvas == null || graphicRaycaster == null)
             return false;
         
-        // 从手柄位置发射射线
+        // Emit ray from controller position
         Ray ray = new Ray(controller.transform.position, controller.transform.forward);
         
-        // 检查射线是否与Canvas平面相交
+        // Check if ray intersects with Canvas plane
         if (RaycastCanvas(ray, out Vector2 canvasPosition))
         {
-            // 检查Canvas位置是否在POI点的范围内
+            // Check if Canvas position is within POI point range
             Vector2 localPoint;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 rectTransform, canvasPosition, canvas.worldCamera, out localPoint))
             {
-                // 检查点是否在POI的矩形范围内
+                // Check if point is within POI rectangle range
                 Rect rect = rectTransform.rect;
                 if (rect.Contains(localPoint))
                 {
@@ -131,15 +131,15 @@ public class POIHoverDetector : MonoBehaviour
         
         if (canvas == null) return false;
         
-        // 获取Canvas的平面
+        // Get Canvas plane
         Plane canvasPlane = new Plane(-canvas.transform.forward, canvas.transform.position);
         
-        // 检查射线与平面的交点
+        // Check intersection point between ray and plane
         if (canvasPlane.Raycast(ray, out float distance))
         {
             Vector3 hitPoint = ray.GetPoint(distance);
             
-            // 将3D点转换为Canvas的2D坐标
+            // Convert 3D point to Canvas 2D coordinates
             Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, hitPoint);
             canvasPosition = screenPoint;
             return true;

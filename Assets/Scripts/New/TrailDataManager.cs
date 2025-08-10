@@ -12,8 +12,8 @@ public class TrailPoint
 
     public TrailPoint(float time, float angle)
     {
-        this.time = Mathf.Round(time * 100f) / 100f;  // 保留小数点后两位
-        this.angle = Mathf.Round(angle * 100f) / 100f;  // 保留小数点后两位
+        this.time = Mathf.Round(time * 100f) / 100f;  // Keep two decimal places
+        this.angle = Mathf.Round(angle * 100f) / 100f;  // Keep two decimal places
     }
 }
 
@@ -24,18 +24,18 @@ public class TrailData
     public string videoName;
     public DateTime recordTime;
     public string angleType;  // "Horizontal" or "Vertical"
-    public double videoDuration;  // 视频总时长（秒）
-    public string userName;  // 用户名
-    public float fov;  // 对应方向的视场角（水平或垂直）
+    public double videoDuration;  // Total video duration (seconds)
+    public string userName;  // User name
+    public float fov;  // Field of view for corresponding direction (horizontal or vertical)
 
     public TrailData(string videoName, string angleType, double duration, string userName, float fov)
     {
         this.videoName = videoName;
         this.recordTime = DateTime.Now;
         this.angleType = angleType;
-        this.videoDuration = Math.Round(duration * 100.0) / 100.0;  // 保留小数点后两位
+        this.videoDuration = Math.Round(duration * 100.0) / 100.0;  // Keep two decimal places
         this.userName = userName;
-        this.fov = Mathf.Round(fov * 100f) / 100f;  // 保留小数点后两位
+        this.fov = Mathf.Round(fov * 100f) / 100f;  // Keep two decimal places
     }
 }
 
@@ -61,7 +61,7 @@ public class TrailDataManager : MonoBehaviour
     private VideoPlayer videoPlayer;
     private string videoFileName;
     private string userName;
-    private Camera vrCamera;  // VR摄像机引用
+    private Camera vrCamera;  // VR camera reference
 
     void Awake()
     {
@@ -73,11 +73,11 @@ public class TrailDataManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // 显示数据保存路径 - 修改为NewData文件夹
+        // Display data save path - changed to NewData folder
         string savePath = Path.Combine(Application.dataPath, "TrailData");
         Debug.Log($"Trail data will be saved to: {savePath}");
 
-        // 获取VR摄像机
+        // Get VR camera
         vrCamera = Camera.main;
         if (vrCamera == null)
         {
@@ -89,11 +89,11 @@ public class TrailDataManager : MonoBehaviour
     {
         this.videoPlayer = videoPlayer;
         
-        // 从 VideoPlayerUIController 获取视频文件名和用户名
+        // Get video filename and username from VideoPlayerUIController
         VideoPlayerUIController controller = FindObjectOfType<VideoPlayerUIController>();
         if (controller != null)
         {
-            // 获取用户名
+            // Get username
             userName = controller.userName;
             if (string.IsNullOrEmpty(userName))
             {
@@ -101,7 +101,7 @@ public class TrailDataManager : MonoBehaviour
                 Debug.LogWarning("Username is empty, using default name 'User'");
             }
 
-            // 获取视频文件名
+            // Get video filename
             if (!string.IsNullOrEmpty(controller.videoURL) && controller.videoURL != "null")
             {
                 videoFileName = Path.GetFileNameWithoutExtension(controller.videoURL);
@@ -120,28 +120,28 @@ public class TrailDataManager : MonoBehaviour
             Debug.LogWarning("Could not find VideoPlayerUIController, using default values");
         }
 
-        // 等待视频准备完成后再初始化数据集合
+        // Wait until video is prepared before initializing data collections
         videoPlayer.prepareCompleted += OnVideoPrepared;
         videoPlayer.Prepare();
     }
 
     private void OnVideoPrepared(VideoPlayer vp)
     {
-        // 获取视频时长
+        // Get video duration
         double duration = vp.length;
         Debug.Log($"Video duration: {duration} seconds");
 
-        // 获取水平和垂直FOV
-        float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // 垂直FOV
+        // Get horizontal and vertical FOV
+        float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // Vertical FOV
         float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
         float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
         Debug.Log($"Device FOV - Horizontal: {horizontalFov} degrees, Vertical: {verticalFov} degrees");
 
-        // 初始化两个数据集合，分别使用对应的FOV
+        // Initialize two data collections, each using the corresponding FOV
         horizontalTrailData = new TrailData(videoFileName, "Horizontal", duration, userName, horizontalFov);
         verticalTrailData = new TrailData(videoFileName, "Vertical", duration, userName, verticalFov);
 
-        // 订阅视频结束事件
+        // Subscribe to video end event
         vp.loopPointReached += OnVideoEnd;
     }
 
@@ -164,19 +164,19 @@ public class TrailDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 手动保存当前的Trail数据并重新开始录制
+    /// Manually save current Trail data and restart recording
     /// </summary>
     public void SaveCurrentTrailDataAndRestart()
     {
-        // 保存当前数据
+        // Save current data
         SaveTrailData();
         
-        // 重新开始录制
+        // Restart recording
         RestartRecording();
     }
 
     /// <summary>
-    /// 公共方法：仅保存当前数据（不重新开始录制）
+    /// Public method: Save current data only (do not restart recording)
     /// </summary>
     public void SaveCurrentTrailData()
     {
@@ -184,21 +184,21 @@ public class TrailDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 重新开始录制（清空当前数据并重新初始化）
+    /// Restart recording (clear current data and reinitialize)
     /// </summary>
     private void RestartRecording()
     {
         if (videoPlayer != null)
         {
-            // 获取视频时长
+            // Get video duration
             double duration = videoPlayer.length;
             
-            // 获取水平和垂直FOV
-            float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // 垂直FOV
+            // Get horizontal and vertical FOV
+            float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;  // Vertical FOV
             float aspect = vrCamera != null ? vrCamera.aspect : 16f/9f;
             float horizontalFov = 2f * Mathf.Atan(Mathf.Tan(verticalFov * 0.5f * Mathf.Deg2Rad) * aspect) * Mathf.Rad2Deg;
 
-            // 重新初始化数据集合
+            // Reinitialize data collections
             horizontalTrailData = new TrailData(videoFileName, "Horizontal", duration, userName, horizontalFov);
             verticalTrailData = new TrailData(videoFileName, "Vertical", duration, userName, verticalFov);
             
@@ -229,14 +229,14 @@ public class TrailDataManager : MonoBehaviour
             return;
         }
 
-        // 修改基础目录为NewData文件夹
+        // Change base directory to TrailData folder
         string baseDirectory = Path.Combine(Application.dataPath, "TrailData");
         if (!Directory.Exists(baseDirectory))
         {
             Directory.CreateDirectory(baseDirectory);
         }
 
-        // 创建包含用户名、时间和视频名的文件夹
+        // Create folder containing username, timestamp and video name
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
         string folderName = $"{userName}_{timestamp}_{videoFileName}";
         string sessionDirectory = Path.Combine(baseDirectory, folderName);
@@ -246,7 +246,7 @@ public class TrailDataManager : MonoBehaviour
             Directory.CreateDirectory(sessionDirectory);
             Debug.Log($"Created session directory: {sessionDirectory}");
 
-            // 保存水平角度数据
+            // Save horizontal angle data
             if (horizontalTrailData != null && horizontalTrailData.points.Count > 0)
             {
                 string horizontalPath = Path.Combine(sessionDirectory, "Horizontal.json");
@@ -255,7 +255,7 @@ public class TrailDataManager : MonoBehaviour
                 Debug.Log($"Horizontal trail data saved to: {horizontalPath}");
             }
 
-            // 保存垂直角度数据
+            // Save vertical angle data
             if (verticalTrailData != null && verticalTrailData.points.Count > 0)
             {
                 string verticalPath = Path.Combine(sessionDirectory, "Vertical.json");
@@ -270,7 +270,7 @@ public class TrailDataManager : MonoBehaviour
         }
         finally
         {
-            // 重置数据
+            // Reset data
             horizontalTrailData = null;
             verticalTrailData = null;
         }

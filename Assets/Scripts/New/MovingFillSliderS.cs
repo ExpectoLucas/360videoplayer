@@ -3,32 +3,32 @@ using UnityEngine.UI;
 
 public class MovingFillSliderS : MonoBehaviour
 {
-    // 关联的 Slider 组件
+    // Associated Slider component
     public Slider slider;
 
-    // 需要移动的填充区域 RectTransform（代表那根竖直移动的线）
+    // Fill area RectTransform to move (represents the vertical moving line)
     public RectTransform fillRect;
 
-    // 固定高度（像素），用于保持 fillRect 不拉伸，沿竖直方向移动时占据固定高度
+    // Fixed height (pixels), used to keep fillRect from stretching, occupying fixed height when moving vertically
     public float fixedFillHeight = 20f;
 
-    // 内部使用，保存 fillRect 的父容器（通常是 Fill Area）
+    // Internal use, save fillRect's parent container (usually Fill Area)
     private RectTransform container;
 
     void Start()
     {
         if (slider == null || fillRect == null)
         {
-            Debug.LogError("请确保 slider 和 fillRect 已正确设置");
+            Debug.LogError("Please ensure slider and fillRect are properly set");
             return;
         }
 
-        // 获取 fillRect 的父容器 RectTransform
+        // Get fillRect's parent container RectTransform
         container = fillRect.parent.GetComponent<RectTransform>();
 
-        // 添加 Slider 数值变化监听
+        // Add Slider value change listener
         slider.onValueChanged.AddListener(OnSliderValueChanged);
-        // 初始化位置
+        // Initialize position
         OnSliderValueChanged(slider.value);
     }
 
@@ -37,20 +37,20 @@ public class MovingFillSliderS : MonoBehaviour
         if (container == null)
             return;
 
-        // 计算 container 的高度
+        // Calculate container height
         float containerHeight = container.rect.height;
 
-        // 计算目标 y 坐标：
-        // 当 normalizedValue 为 0 时，fillRect 在容器底部（y = 0）；
-        // 当 normalizedValue 为 1 时，fillRect 在容器顶部，其 y 坐标为 containerHeight - fixedFillHeight
+        // Calculate target y coordinate:
+        // When normalizedValue is 0, fillRect is at bottom of container (y = 0);
+        // When normalizedValue is 1, fillRect is at top of container, its y coordinate is containerHeight - fixedFillHeight
         float targetY = slider.normalizedValue * (containerHeight - fixedFillHeight);
 
-        // 固定 fillRect 的高度，避免拉伸
+        // Fix fillRect height to avoid stretching
         Vector2 size = fillRect.sizeDelta;
         size.y = fixedFillHeight;
         fillRect.sizeDelta = size;
 
-        // 更新 anchoredPosition 的 y 坐标（这里只修改 y 轴，x 轴保留原有值）
+        // Update anchoredPosition's y coordinate (only modify y axis here, preserve original x axis value)
         Vector2 pos = fillRect.anchoredPosition;
         pos.y = targetY;
         fillRect.anchoredPosition = pos;
@@ -58,7 +58,7 @@ public class MovingFillSliderS : MonoBehaviour
 
     void OnDestroy()
     {
-        // 移除监听，防止内存泄漏
+        // Remove listener to prevent memory leaks
         if (slider != null)
             slider.onValueChanged.RemoveListener(OnSliderValueChanged);
     }

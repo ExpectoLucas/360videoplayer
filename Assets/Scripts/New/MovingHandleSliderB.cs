@@ -1,27 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;  // 用于 IPointerDownHandler / IPointerUpHandler
-using UnityEngine.Video;  // 添加 Video 命名空间
+using UnityEngine.EventSystems;  // For IPointerDownHandler / IPointerUpHandler
+using UnityEngine.Video;  // Add Video namespace
 
 public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [Header("UI 与 摄像机设置")]
+    [Header("UI and Camera Settings")]
     public Slider slider;
     public Transform headTransform;
     public RectTransform container;
-    [Tooltip("用于获取垂直 FOV 的摄像机；如果不填，会自动用 Camera.main")]
+    [Tooltip("Camera used to get vertical FOV; if not set, Camera.main will be used automatically")]
     public Camera vrCamera;
-    [Tooltip("视频播放器，用于检查播放状态")]
+    [Tooltip("Video player, used to check playback status")]
     public VideoPlayer videoPlayer;
 
-    [Header("红点基础设置")]
-    [Tooltip("红点横向（宽度）固定像素")]
+    [Header("Handle Basic Settings")]
+    [Tooltip("Fixed pixel width for handle in horizontal direction")]
     public float fixedHandleWidth = 10f;
 
-    [Header("轨迹历史设置")]
-    // [Tooltip("用于记录轨迹的预制体，需要是一个 UI Image Prefab")]
+    [Header("Trail History Settings")]
+    // [Tooltip("Prefab for recording trail, needs to be a UI Image Prefab")]
     // public GameObject trailPrefab;
-    [Tooltip("记录轨迹的时间间隔（秒），低于此间隔不再重复记录")]
+    [Tooltip("Time interval for recording trail (seconds), won't record repeatedly below this interval")]
     public float recordInterval = 0.1f;
 
     private RectTransform handleRect;
@@ -32,7 +32,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (slider == null || headTransform == null || container == null)
         {
-            Debug.LogError("请在 Inspector 中设置 slider、headTransform 和 container！");
+            Debug.LogError("Please set slider, headTransform and container in the Inspector!");
             enabled = false;
             return;
         }
@@ -40,7 +40,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         handleRect = slider.handleRect;
         if (handleRect == null)
         {
-            Debug.LogError("Slider.handleRect 为空，请在 Slider 上指定红点 RectTransform！");
+            Debug.LogError("Slider.handleRect is empty, please specify the handle RectTransform on the Slider!");
             enabled = false;
             return;
         }
@@ -48,13 +48,13 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         if (vrCamera == null)
             vrCamera = Camera.main;
 
-        // 初始化 TrailDataManager
+        // Initialize TrailDataManager
         if (videoPlayer != null)
         {
             TrailDataManager.Instance.Initialize(videoPlayer);
         }
         
-        // 设置热力图容器的垂直容器引用
+        // Set vertical container reference for heatmap container
         if (HeatmapManager.Instance != null)
         {
             HeatmapManager.Instance.verticalContainer = container;
@@ -63,7 +63,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
     void LateUpdate()
     {
-        // 1. 更新 handle 的锚点/尺寸/位置 (使用left-stretch模式)
+        // 1. Update handle anchors/size/position (using left-stretch mode)
         handleRect.anchorMin = new Vector2(0f, 0f);
         handleRect.anchorMax = new Vector2(0f, 1f);
         handleRect.pivot = new Vector2(0.5f, 0.5f);
@@ -73,7 +73,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
         float verticalFov = vrCamera != null ? vrCamera.fieldOfView : 60f;
         float handleH = h * (verticalFov / 180f);
 
-        // 在left-stretch模式下，sizeDelta.y表示相对于stretch高度的偏移
+        // In left-stretch mode, sizeDelta.y represents the offset relative to stretch height
         handleRect.sizeDelta = new Vector2(fixedHandleWidth, -h + handleH);
 
         float x = slider.normalizedValue * w;
@@ -83,7 +83,7 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
 
         handleRect.anchoredPosition = new Vector2(x, y);
 
-        // 2. 只有当不在拖拽中且视频正在播放时，才累加计时器并记录轨迹
+        // 2. Only accumulate timer and record trail when not dragging and video is playing
         if (!isDragging && videoPlayer != null && videoPlayer.isPlaying)
         {
             recordTimer += Time.deltaTime;
@@ -91,43 +91,43 @@ public class MovingHandleSliderB : MonoBehaviour, IPointerDownHandler, IPointerU
             {
                 recordTimer = 0f;
 
-                // 计算当前俯仰角度（相对于水平点）
+                // Calculate current pitch angle (relative to horizontal point)
                 pitch = headTransform.rotation.eulerAngles.x;
                 if (pitch > 180f) pitch -= 360f;
-                // 限制在 -90 到 90 度范围内
+                // Limit within -90 to 90 degrees range
                 pitch = Mathf.Clamp(pitch, -90f, 90f);
 
-                // 记录轨迹点
+                // Record trail point
                 TrailDataManager.Instance.AddTrailPoint(
                     (float)videoPlayer.time,
                     -pitch,
                     false  // isHorizontal = false for B slider
                 );
 
-                // 创建轨迹段（已注释，保留以备后用）
+                // Create trail segment (commented out, kept for future use)
                 // CreateTrailSegment(x, y, handleH * 0.5f);
 
-                // **关键：生成完轨迹后，把 handle 放到最后**
+                // **Important: After generating trail, bring handle to the front**
                 handleRect.transform.SetAsLastSibling();
             }
         }
     }
 
-    // 当用户在 Slider 上按下（开始拖拽）时调用
+    // Called when user presses on the Slider (starts dragging)
     public void OnPointerDown(PointerEventData eventData)
     {
         isDragging = true;
-        recordTimer = 0f; // 拖拽开始时重置计时器
+        recordTimer = 0f; // Reset timer when drag starts
     }
 
-    // 当用户松开鼠标或手柄时调用
+    // Called when user releases mouse or controller
     public void OnPointerUp(PointerEventData eventData)
     {
         isDragging = false;
-        recordTimer = 0f; // 结束拖拽后也清零，保证间隔从 0 开始
+        recordTimer = 0f; // Also reset after dragging ends, ensuring interval starts from 0
     }
 
-    // 创建轨迹段的方法（已注释，保留以备后用）
+    // Method for creating trail segments (commented out, kept for future use)
     /*
     private void CreateTrailSegment(float x, float y, float height)
     {

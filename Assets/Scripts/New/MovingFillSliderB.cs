@@ -3,32 +3,32 @@ using UnityEngine.UI;
 
 public class MovingFillSliderB : MonoBehaviour
 {
-    // 关联的 Slider 组件
+    // Associated Slider component
     public Slider slider;
 
-    // 需要移动的填充区域 RectTransform
+    // Fill area RectTransform to move
     public RectTransform fillRect;
 
-    // 固定宽度（像素），可根据需求在 Inspector 中调整
+    // Fixed width (pixels), adjustable in Inspector as needed
     public float fixedFillWidth = 20f;
 
-    // 内部使用，保存 fillRect 的父容器（通常是 Fill Area）
+    // Internal use, save fillRect's parent container (usually Fill Area)
     private RectTransform container;
 
     void Start()
     {
         if (slider == null || fillRect == null)
         {
-            Debug.LogError("请确保 slider 和 fillRect 已正确设置");
+            Debug.LogError("Please ensure slider and fillRect are properly set");
             return;
         }
 
-        // 获取 fillRect 的父容器 RectTransform
+        // Get fillRect's parent container RectTransform
         container = fillRect.parent.GetComponent<RectTransform>();
 
-        // 添加 Slider 值变化监听
+        // Add Slider value change listener
         slider.onValueChanged.AddListener(OnSliderValueChanged);
-        // 初始化位置
+        // Initialize position
         OnSliderValueChanged(slider.value);
     }
 
@@ -37,7 +37,7 @@ public class MovingFillSliderB : MonoBehaviour
         if (container == null)
             return;
 
-        // 计算 container 的宽度
+        // Calculate container width
         float containerWidth = container.rect.width;
 
         // 计算目标 x 坐标：

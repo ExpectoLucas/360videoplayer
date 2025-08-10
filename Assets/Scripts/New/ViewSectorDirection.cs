@@ -21,10 +21,10 @@ public class ViewSectorDirection : MonoBehaviour
     {
         if (vrCamera != null)
         {
-            // 获取头显当前Y轴旋转角度
+            // Get current Y-axis rotation angle of headset
             float headYRotation = vrCamera.eulerAngles.y;
 
-            // UI的Z轴旋转使扇形正确指示头部朝向
+            // UI Z-axis rotation makes sector correctly indicate head orientation
             transform.localEulerAngles = new Vector3(0, 0, -headYRotation);
 
             UpdateFOV(cam.fieldOfView);
@@ -34,7 +34,7 @@ public class ViewSectorDirection : MonoBehaviour
 
     void UpdateFOV(float fovAngle)
     {
-        // FOV通常为90度，对应360度圆盘的0.25
+        // FOV is usually 90 degrees, corresponding to 0.25 of a 360-degree circle
         sector_img.fillAmount = fovAngle / 360f;
     }
 }

@@ -77,3 +77,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+#data
+/[Aa]ssets/[Ss]cripts/[Nn]ew/boxplot.ipynb
+/[Aa]ssets/[Ss]cripts/[Nn]ew/heatmap.ipynb

@@ -1,0 +1,25 @@
+{
+    "points": [
+        {
+            "time": 30.860000610351564,
+            "angle": 10.039999961853028
+        },
+        {
+            "time": 31.360000610351564,
+            "angle": 10.380000114440918
+        },
+        {
+            "time": 31.8700008392334,
+            "angle": 11.130000114440918
+        },
+        {
+            "time": 32.369998931884769,
+            "angle": 11.34000015258789
+        }
+    ],
+    "videoName": "20180717_monkey cinema_focal manny_injected_360",
+    "angleType": "Vertical",
+    "videoDuration": 218.72,
+    "userName": "Guidance_8",
+    "fov": 108.0
+}

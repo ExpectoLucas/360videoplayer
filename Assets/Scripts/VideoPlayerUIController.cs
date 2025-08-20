@@ -10,10 +10,10 @@ using System;
 
 public class VideoPlayerUIController : MonoBehaviour
 {
-    [Header("用户信息")]
+    [Header("User Information")]
     public string userName = "User";  // 用户名，可在 Inspector 中设置
 
-    [Header("UI 组件")]
+    [Header("UI Components")]
     public Slider timeSlider;
     public Slider timeSlider2; // 第二个时间滑块
     public VideoPlayer videoPlayer;
@@ -24,17 +24,17 @@ public class VideoPlayerUIController : MonoBehaviour
     public Sprite pauseImage;
     public Button playPauseButton;
 
-    [Header("热力图设置")]
-    [Tooltip("水平滑块容器（用于显示水平热力图）")]
+    [Header("Heatmap Settings")]
+    [Tooltip("Horizontal slider container (for displaying horizontal heatmap)")]
     public RectTransform horizontalHeatmapContainer;
-    [Tooltip("垂直滑块容器（用于显示垂直热力图）")]
+    [Tooltip("Vertical slider container (for displaying vertical heatmap)")]
     public RectTransform verticalHeatmapContainer;
 
     private float timer = 0;
     private float skippingTime = 10;
     float rotationSpeed = 2f;
     public bool sliderdown = false;
-    public bool slider2down = false; // 第二个滑块的按下状态
+    public bool slider2down = false; 
     public static bool playing = false;
     private bool wasPlaying = false;
     private bool started = false;
@@ -56,7 +56,7 @@ public class VideoPlayerUIController : MonoBehaviour
     void Start()
     {
         videoURL = Path.Combine(Application.dataPath, "20180717_monkey cinema_focal manny_injected_360.mp4");
-        // 添加滑块值改变事件监听
+        
         if (timeSlider != null)
             timeSlider.onValueChanged.AddListener(OnSliderValueChanged);
         if (timeSlider2 != null)
@@ -65,7 +65,7 @@ public class VideoPlayerUIController : MonoBehaviour
         //PlayPauseButton(); //Enabled. Pause the video when the scene is loaded
     }
 
-    // 第一个滑块值改变时的回调
+    
     private void OnSliderValueChanged(float value)
     {
         if (!isUpdatingSlider)
@@ -77,7 +77,7 @@ public class VideoPlayerUIController : MonoBehaviour
         }
     }
 
-    // 第二个滑块值改变时的回调
+    
     private void OnSlider2ValueChanged(float value)
     {
         if (!isUpdatingSlider)
@@ -92,7 +92,7 @@ public class VideoPlayerUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 如果视频正在播放，同步更新两个滑块的值
+        // If the video is playing, synchronize the values of the two sliders
         if (playing && !sliderdown && !slider2down)
         {
             if (videoPlayer != null && videoPlayer.length > 0)
@@ -105,7 +105,7 @@ public class VideoPlayerUIController : MonoBehaviour
             }
         }
 
-        // 处理第一个滑块
+        // Handle the first slider
         if (sliderdown && timeSlider != null)
         {
             if (timer < 0.5f)
@@ -118,7 +118,7 @@ public class VideoPlayerUIController : MonoBehaviour
                 timer -= Time.deltaTime;
             }
         }
-        // 处理第二个滑块
+        // Handle the second slider
         else if (slider2down && timeSlider2 != null)
         {
             if (timer < 0.5f)
@@ -187,27 +187,27 @@ public class VideoPlayerUIController : MonoBehaviour
     {
         player.time = videoStartTime;
         player.Play();
-        
-        // 加载并显示热力图
+
+        // Load and display heatmap
         LoadHeatmap();
     }
     
     private void LoadHeatmap()
     {
-        // 获取视频文件名
+        // Get video file name
         string videoName = "unknown_video";
         if (!string.IsNullOrEmpty(videoURL) && videoURL != "null")
         {
             videoName = System.IO.Path.GetFileNameWithoutExtension(videoURL);
         }
         
-        // 设置热力图容器的引用
+        
         if (HeatmapManager.Instance != null)
         {
             HeatmapManager.Instance.horizontalContainer = horizontalHeatmapContainer;
             HeatmapManager.Instance.verticalContainer = verticalHeatmapContainer;
             
-            // 加载并显示热力图
+            
             HeatmapManager.Instance.LoadAndDisplayHeatmap(videoName, userName);
             Debug.Log($"Loading heatmap for video: {videoName}, user: {userName}");
         }
@@ -299,7 +299,7 @@ public class VideoPlayerUIController : MonoBehaviour
         videoSphere.transform.Rotate(Vector3.right * -yAxisRotation, Space.World);
     }
 
-    // 第二个滑块的相关方法
+   
     public void Slider2Down()
     {
         if (timeSlider2 == null) return;
@@ -331,7 +331,7 @@ public class VideoPlayerUIController : MonoBehaviour
         Debug.Log("[Timeline2] release: " + timeHandler.timeCurr.text);
     }
 
-    // 在组件销毁时移除事件监听
+    
     void OnDestroy()
     {
         if (timeSlider != null)
